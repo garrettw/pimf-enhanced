@@ -12,7 +12,7 @@ use \Pimf\Param, \Pimf\Config, \Pimf\Sapi,
     \Pimf\Controller\Exception as Bomb,
     \Pimf\Request, \Pimf\Util\Header, \Pimf\Url,
     \Pimf\Response, \Pimf\EntityManager, \Pimf\Logger,
-    \Pimf\Util\Character, \Pimf\Util\Value, \Pimf\Environment, \Pimf\Router;
+    \Pimf\Util\Value, \Pimf\Environment, \Pimf\Router;
 
 /**
  * Defines the general controller behaviour - you have to extend it.
@@ -53,18 +53,18 @@ abstract class Base
     protected $env;
 
     /**
-     * @param Request            $request
-     * @param Response           $response
-     * @param Logger             $logger
-     * @param EntityManager      $em
-     * @param Router             $router
-     * @param Environment  $env
+     * @param Request       $request
+     * @param Response      $response
+     * @param Logger        $logger
+     * @param EntityManager $em
+     * @param Router        $router
+     * @param Environment   $env
      */
     public function __construct(
         Request $request,
         Response $response = null,
         Logger $logger,
-        EntityManager $em,
+        $em,
         Router $router,
         Environment $env
     ) {
@@ -97,7 +97,7 @@ abstract class Base
 
                 $redirectUrl = new Value($this->env->REDIRECT_URL);
                 $redirectUrl = $redirectUrl->deleteLeading('/')->deleteTrailing('/')->explode('/');
-                $action      = isset($redirectUrl[1]) ? $redirectUrl[1] : 'index';
+                $action = isset($redirectUrl[1]) ? $redirectUrl[1] : 'index';
 
             } else {
 

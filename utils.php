@@ -1,4 +1,5 @@
 <?php
+
 namespace Pimf;
 
 /**
@@ -54,12 +55,9 @@ function ent($value)
 
 /**
  * Relax the system and free up some memory
- *
- * @param int $seconds
  */
-function relax($seconds = 1)
+function relax()
 {
-    sleep($seconds);
     clearstatcache();
 
     // free up the memory that could be lost
@@ -69,4 +67,3 @@ function relax($seconds = 1)
         gc_collect_cycles();
     }
 }
-
