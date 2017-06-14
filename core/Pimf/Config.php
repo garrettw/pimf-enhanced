@@ -13,7 +13,7 @@ namespace Pimf;
  * @package Pimf
  * @author  Gjero Krsteski <gjero@krsteski.de>
  */
-class Config
+class Config implements \ArrayAccess
 {
 
     /**
@@ -21,17 +21,17 @@ class Config
      *
      * @var \ArrayObject
      */
-    protected static $battery;
+    protected $battery;
 
     /**
      * @param array $config
-     * @param bool  $override Used for testing only!
      */
-    public static function load(array $config, $override = false)
+    public function __construct(array $config)
     {
-        if (!self::$battery || $override === true) {
-            self::$battery = new \ArrayObject($config, \ArrayObject::STD_PROP_LIST + \ArrayObject::ARRAY_AS_PROPS);
-        }
+        $this->battery = new \ArrayObject(
+            $config,
+            \ArrayObject::STD_PROP_LIST & \ArrayObject::ARRAY_AS_PROPS
+        );
     }
 
     /**
@@ -42,13 +42,13 @@ class Config
      *
      * @return mixed|null
      */
-    public static function get($index, $default = null)
+    public function get($index, $default = null)
     {
-        if (self::$battery->offsetExists($index)) {
-            return self::$battery->offsetGet($index);
+        if (isset($this->battery[$index])) {
+            return $this->battery[$index];
         }
 
-        $array = self::$battery->getArrayCopy();
+        $array = $this->battery->getArrayCopy();
 
         foreach ((array)explode('.', $index) as $segment) {
 
@@ -60,5 +60,58 @@ class Config
         }
 
         return $array;
+    }
+
+    /**
+     * Responds to: isset($config['index'])
+     *
+     * @param string|integer $offset The index or identifier
+     *
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        if ($this->get($offset, null) !== null) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Responds to: $config['index']
+     *
+     * @param string|integer $offset The index or identifier
+     *
+     * @return mixed The value of the specified config field
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * Responds to: $config['index'] = 'something';
+     *
+     * @param string|integer $offset The index or identifier
+     * @param mixed $value The value of the specified config field
+     *
+     * @throws \LogicException Object is immutable
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new \LogicException('Config objects are immutable');
+    }
+
+    /**
+     * Responds to: unset($config['index']);
+     *
+     * @param string|integer $offset The index or identifier
+     *
+     * @throws \LogicException Object is immutable
+     */
+    public function offsetUnset($offset)
+    {
+        throw new \LogicException('Config objects are immutable');
     }
 }

@@ -8,7 +8,10 @@
 
 namespace Pimf;
 
-use Pimf\Util\Character as Str, Pimf\Util\Header, Pimf\Util\Header\ResponseStatus, Pimf\Util\Uuid;
+use Pimf\Util\Character as Str;
+use Pimf\Util\Header;
+use Pimf\Util\Header\ResponseStatus;
+use Pimf\Util\Uuid;
 
 /**
  * Provides a facility for applications which provides reusable resources,
@@ -25,50 +28,49 @@ final class Application
     /**
      * @var Environment
      */
-    protected static $env;
+    protected $env;
 
     /**
      * @var Logger
      */
-    protected static $logger;
+    protected $logger;
 
     /**
      * @var EntityManager
      */
-    protected static $em;
+    protected $em;
 
     /**
      * @var Router
      */
-    protected static $router;
+    protected $router;
 
     /**
      * Mechanism used to do initial setup and edging before a application runs.
      *
-     * @param array $conf The array of configuration options.
+     * @param \Pimf\Config $conf The object containing configuration options.
      * @param array $server Array of information such as headers, paths, and script locations.
      *
      * @return boolean|null
      */
-    public static function bootstrap(array $conf, array $server = array())
+    public function __construct(Config $conf, array $server = [])
     {
-        $problems = array();
+        $problems = [];
 
         try {
 
-            Config::load($conf);
+            $environment = $conf['environment'];
+            $appname = $conf['app.name'];
 
-            $environment = Config::get('environment');
+            date_default_timezone_set($conf['timezone']);
 
-            date_default_timezone_set(Config::get('timezone'));
-
-            self::setupUtils($server, Config::get('bootstrap.local_temp_directory'), Config::get('logging.storage', 'file'));
-            self::loadListeners(BASE_PATH . 'app/' . Config::get('app.name') . '/events.php');
-            self::setupErrorHandling($environment);
-            self::loadPdoDriver($environment, Config::get($environment . '.db'), Config::get('app.name'));
-            self::loadRoutes(
-                Config::get('app.routeable'),
-                BASE_PATH . 'app/' . Config::get('app.name') . '/routes.php'
+            $this->setupUtils($server, $conf['bootstrap.local_temp_directory'], $conf->get('logging.storage', 'file'));
+            $this->loadListeners(BASE_PATH . 'app/' . $appname . '/events.php');
+            $this->setupErrorHandling($environment);
+            $this->loadPdoDriver($environment, $conf[$environment . '.db'], $appname);
+            $this->loadRoutes(
+                $conf['app.routeable'],
+                BASE_PATH . 'app/' . $appname . '/routes.php'
             );
 
         } catch (\Throwable $throwable) {
@@ -77,7 +79,7 @@ final class Application
             $problems[] = $exception->getMessage();
         }
 
-        self::reportIf($problems, PHP_VERSION);
+        $this->reportIf($problems, PHP_VERSION);
     }
 
     /**
@@ -92,7 +94,7 @@ final class Application
      *
      * @return void
      */
-    public static function run(array $get, array $post, array $cookie, array $files)
+    public function run(array $get, array $post, array $cookie, array $files)
     {
         $cli = array();
         if (Sapi::isCli()) {
@@ -127,12 +129,14 @@ final class Application
         }
 
         $pimf->render();
+
+        return $this;
     }
 
     /**
      * @param string $environment
      */
-    private static function setupErrorHandling($environment)
+    private function setupErrorHandling($environment)
     {
         if ($environment == 'testing') {
             error_reporting(E_ALL | E_STRICT);
@@ -167,7 +171,7 @@ final class Application
      * @param $tmpPath
      * @param string $logging
      */
-    private static function setupUtils(array $server, $tmpPath, $logging = 'file')
+    private function setupUtils(array $server, $tmpPath, $logging = 'file')
     {
         self::$env = new Environment($server);
         $envData = self::$env->data();
@@ -209,7 +213,7 @@ final class Application
      * @param array $dbConf
      * @param string $appName
      */
-    private static function loadPdoDriver($environment, $dbConf, $appName)
+    private function loadPdoDriver($environment, $dbConf, $appName)
     {
         if (is_array($dbConf) && $environment != 'testing') {
             self::$em = new EntityManager(Pdo\Factory::get($dbConf), $appName);
@@ -220,7 +224,7 @@ final class Application
      * @param boolean $routeable
      * @param string $routes Path to routes definition file.
      */
-    private static function loadRoutes($routeable, $routes)
+    private function loadRoutes($routeable, $routes)
     {
         if ($routeable === true && file_exists($routes)) {
 
@@ -237,7 +241,7 @@ final class Application
     /**
      * @param string $events Path to event listeners
      */
-    private static function loadListeners($events)
+    private function loadListeners($events)
     {
         if (file_exists($events)) {
             include_once $events;
@@ -251,7 +255,7 @@ final class Application
      *
      * @return array|void
      */
-    private static function reportIf(array $problems, $version, $die = true)
+    private function reportIf(array $problems, $version, $die = true)
     {
         if (version_compare($version, 5.3) == -1) {
             $problems[] = 'You have PHP ' . $version . ' and you need 5.3 or higher!';
@@ -267,15 +271,5 @@ final class Application
      */
     private function __clone()
     {
-    }
-
-    /**
-     * Stopping the PHP process for PHP-FastCGI users to speed up some PHP queries.
-     */
-    public static function finish()
-    {
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        }
     }
 }

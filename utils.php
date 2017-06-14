@@ -67,3 +67,13 @@ function relax()
         gc_collect_cycles();
     }
 }
+
+/**
+ * Stopping the PHP process for PHP-FastCGI users to speed up some PHP queries.
+ */
+function finish()
+{
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    }
+}
