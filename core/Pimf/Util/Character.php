@@ -256,7 +256,7 @@ class Character
      *
      * @return bool
      */
-    public static function is($pattern, $value)
+    public static function matches($pattern, $value)
     {
         if ($pattern !== '/') {
             $pattern = str_replace('*', '(.*)', $pattern) . '\z';

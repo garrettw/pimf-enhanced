@@ -53,7 +53,7 @@ abstract class Storage
      */
     public function fresh()
     {
-        return array('id' => $this->id(), 'data' => array(':new:' => array(), ':old:' => array(),));
+        return ['id' => $this->newId(), 'data' => [':new:' => [], ':old:' => []]];
     }
 
     /**
@@ -61,7 +61,7 @@ abstract class Storage
      *
      * @return string
      */
-    public function id()
+    public function newId()
     {
         // just return any string since the Cookie storage has no idea.
         if ($this instanceof \Pimf\Session\Storages\Cookie) {

@@ -19,7 +19,7 @@ class Validator
     /**
      * @var array
      */
-    protected $errors = array();
+    protected $errors = [];
 
     /**
      * @var \Pimf\Param
@@ -37,7 +37,7 @@ class Validator
     /**
      * @return array
      */
-    public function getErrors()
+    public function errors()
     {
         return $this->errors;
     }
@@ -59,7 +59,7 @@ class Validator
      */
     public function email($field)
     {
-        return (filter_var(trim($this->get($field)), FILTER_VALIDATE_EMAIL) !== false) ?: $this->error($field,
+        return (filter_var(trim($this->get($field)), FILTER_VALIDATE_EMAIL) !== false) ?: $this->addError($field,
             __FUNCTION__);
     }
 
@@ -72,7 +72,7 @@ class Validator
      */
     public function ip($field)
     {
-        return (filter_var(trim($this->get($field)), FILTER_VALIDATE_IP) !== false) ?: $this->error($field,
+        return (filter_var(trim($this->get($field)), FILTER_VALIDATE_IP) !== false) ?: $this->addError($field,
             __FUNCTION__);
     }
 
@@ -85,7 +85,7 @@ class Validator
      */
     public function url($field)
     {
-        return (filter_var(trim($this->get($field)), FILTER_VALIDATE_URL) !== false) ?: $this->error($field,
+        return (filter_var(trim($this->get($field)), FILTER_VALIDATE_URL) !== false) ?: $this->addError($field,
             __FUNCTION__);
     }
 
@@ -109,7 +109,7 @@ class Validator
             $valid = (strcmp(strtolower($field1value), strtolower($field2value)) == 0);
         }
 
-        return ($valid === true) ?: $this->error($field1 . "|" . $field2, __FUNCTION__);
+        return ($valid === true) ?: $this->addError($field1 . "|" . $field2, __FUNCTION__);
     }
 
     /**
@@ -124,15 +124,9 @@ class Validator
      */
     public function lengthBetween($field, $min, $max, $inclusive = false)
     {
-        $fieldValue = strlen(trim($this->get($field)));
+        $valid = static::between(strlen(trim($this->get($field))), $min, $max, $inclusive);
 
-        $valid = ($fieldValue <= $max && $fieldValue >= $min);
-
-        if (!$inclusive) {
-            $valid = ($fieldValue < $max && $fieldValue > $min);
-        }
-
-        return ($valid === true) ?: $this->error($field, __FUNCTION__);
+        return ($valid === true) ?: $this->addError($field, __FUNCTION__);
     }
 
     /**
@@ -144,7 +138,7 @@ class Validator
      */
     public function punctuation($field)
     {
-        return (preg_match("/[^\w\s\p{P}]/", '' . $this->get($field)) > 0) ? $this->error($field, __FUNCTION__) : true;
+        return (preg_match("/[^\w\s\p{P}]/", '' . $this->get($field)) > 0) ? $this->addError($field, __FUNCTION__) : true;
     }
 
     /**
@@ -187,15 +181,9 @@ class Validator
      */
     public function valueBetween($field, $min, $max, $inclusive = false)
     {
-        $fieldValue = $this->get($field);
+        $valid = static::between($this->get($field), $min, $max, $inclusive);
 
-        $valid = ($fieldValue <= $max && $fieldValue >= $min);
-
-        if (!$inclusive) {
-            $valid = ($fieldValue < $max && $fieldValue > $min);
-        }
-
-        return ($valid === true) ?: $this->error($field, __FUNCTION__);
+        return ($valid === true) ?: $this->addError($field, __FUNCTION__);
     }
 
     /**
@@ -207,7 +195,7 @@ class Validator
      */
     public function digit($field)
     {
-        return (ctype_digit((string)$this->get($field)) === true) ?: $this->error($field, __FUNCTION__);
+        return (ctype_digit((string)$this->get($field)) === true) ?: $this->addError($field, __FUNCTION__);
     }
 
     /**
@@ -219,7 +207,7 @@ class Validator
      */
     public function alpha($field)
     {
-        return (ctype_alpha((string)$this->get($field)) === true) ?: $this->error($field, __FUNCTION__);
+        return (ctype_alpha((string)$this->get($field)) === true) ?: $this->addError($field, __FUNCTION__);
     }
 
     /**
@@ -231,7 +219,7 @@ class Validator
      */
     public function alphaNumeric($field)
     {
-        return (ctype_alnum((string)$this->get($field)) === true) ?: $this->error($field, __FUNCTION__);
+        return (ctype_alnum((string)$this->get($field)) === true) ?: $this->addError($field, __FUNCTION__);
     }
 
     /**
@@ -252,7 +240,7 @@ class Validator
 
             return $fieldValue === $date->format($format);
         } catch (\Exception $exception) {
-            return $this->error($field, __FUNCTION__);
+            return $this->addError($field, __FUNCTION__);
         }
     }
 
@@ -262,7 +250,7 @@ class Validator
      *
      * @return boolean
      */
-    protected function error($field, $error)
+    protected function addError($field, $error)
     {
         $this->errors = array_merge_recursive($this->errors, array($field => $error));
 
@@ -310,9 +298,18 @@ class Validator
                 }
             };
 
-            return ($func($comparing, $expecting) === true) ?: $this->error($fieldName, $operator);
+            return ($func($comparing, $expecting) === true) ?: $this->addError($fieldName, $operator);
         }
 
         return false;
+    }
+
+    protected static function between($fieldValue, $min, $max, $inclusive)
+    {
+        if ($inclusive) {
+            return ($fieldValue <= $max && $fieldValue >= $min);
+        }
+
+        return ($fieldValue < $max && $fieldValue > $min);
     }
 }

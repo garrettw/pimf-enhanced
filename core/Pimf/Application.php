@@ -233,7 +233,7 @@ final class Application
             );
         }
 
-        $this->logger->init();
+        $this->logger->checkInit();
     }
 
     /**

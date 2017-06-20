@@ -240,7 +240,7 @@ class Payload
      */
     public function regenerate()
     {
-        $this->session['id'] = $this->storage->id();
+        $this->session['id'] = $this->storage->newId();
         $this->exists = false;
     }
 

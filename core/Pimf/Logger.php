@@ -67,18 +67,16 @@ class Logger
     /**
      * @throws \RuntimeException If something went wrong on creating the log dir and file.
      */
-    public function init()
+    public function checkInit()
     {
         if (is_resource($this->errorHandle)
             && is_resource($this->infoHandle)
             && is_resource($this->warnHandle)
         ) {
-            return;
+            return true;
         }
 
-        if (!$this->errorHandle || !$this->infoHandle || !$this->warnHandle) {
-            throw new \RuntimeException("failed to obtain a Streamable handle for logging");
-        }
+        throw new \RuntimeException("failed to obtain a Streamable handle for logging");
     }
 
     /**
@@ -149,24 +147,24 @@ class Logger
             fwrite($this->errorHandle, $msg);
         } else {
             fwrite($this->infoHandle, $msg);
-
         }
     }
 
     public function __destruct()
     {
-        if (is_resource($this->infoHandle)
-            && is_resource($this->warnHandle)
-            && is_resource($this->errorHandle)
+        if (!is_resource($this->infoHandle)
+            || !is_resource($this->warnHandle)
+            || !is_resource($this->errorHandle)
         ) {
-
-            if (fclose($this->infoHandle) === false) {
-                $this->error('Logger failed to close the handle to the log file');
-            }
-
-            fclose($this->warnHandle);
-            fclose($this->errorHandle);
+            return;
         }
+
+        if (fclose($this->infoHandle) === false) {
+            $this->error('Logger failed to close the handle to the log file');
+        }
+
+        fclose($this->warnHandle);
+        fclose($this->errorHandle);
     }
 
     /**
@@ -179,26 +177,18 @@ class Logger
      */
     private function format($message, $severity)
     {
-        $msg = date("m-d-Y") . " " . date("G:i:s") . " " . self::$remoteIp;
-
-        $IPLength = strlen(self::$remoteIp);
-        $numWhitespaces = 15 - $IPLength;
-
-        for ($i = 0; $i < $numWhitespaces; $i++) {
-            $msg .= " ";
-        }
-
-        $msg .= " " . $severity . ": ";
-
-        $lastSlashIndex = strrpos(self::$script, "/");
         $fileName = self::$script;
+        $lastSlashIndex = strrpos($fileName, "/");
 
         if ($lastSlashIndex !== false) {
-            $fileName = substr(self::$script, $lastSlashIndex + 1);
+            $fileName = substr($fileName, $lastSlashIndex + 1);
         }
 
-        $msg .= $fileName . "\t";
-        $msg .= ": " . $message . "\r\n";
+        $msg = date("m-d-Y") . " " . date("G:i:s") . " " . self::$remoteIp
+            .= str_repeat(" ", 15 - strlen(self::$remoteIp))
+            .= " " . $severity . ": "
+            .= $fileName . "\t: " . $message . "\r\n"
+        ;
 
         return $msg;
     }
@@ -216,10 +206,10 @@ class Logger
             case 'on':
             case 'yes':
             case 'true':
-                return 'assert.active' !== $varname;
+                return ('assert.active' !== $varname);
             case 'stdout':
             case 'stderr':
-                return 'display_errors' === $varname;
+                return ('display_errors' === $varname);
             default:
                 return (bool)(int)$varvalue;
         }

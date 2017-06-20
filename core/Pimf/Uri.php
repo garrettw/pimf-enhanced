@@ -90,8 +90,8 @@ class Uri
      *
      * @return bool
      */
-    public static function is($pattern)
+    public static function matches($pattern)
     {
-        return Str::is($pattern, static::current());
+        return Str::matches($pattern, static::current());
     }
 }

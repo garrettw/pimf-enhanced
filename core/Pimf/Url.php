@@ -14,10 +14,10 @@ use Pimf\Util\Character as Str;
  *
  * <code>
  *    // create a URL to a location within the application
- *    $url = Url::to('user/profile');
+ *    $url = Url::make('user/profile');
  *
  *    // create a HTTPS URL to a location within the application
- *    $url = Url::to('user/profile', true);
+ *    $url = Url::make('user/profile', true);
  * </code>
  *
  * @package Pimf
@@ -63,7 +63,7 @@ class Url
      */
     public static function full()
     {
-        return static::to(Uri::full());
+        return static::make(Uri::full());
     }
 
     /**
@@ -73,7 +73,7 @@ class Url
      */
     public static function current()
     {
-        return static::to(Uri::current(), null, false);
+        return static::make(Uri::current(), null, false);
     }
 
     /**
@@ -85,7 +85,7 @@ class Url
      */
     public static function home($https = null)
     {
-        return static::to('/', $https);
+        return static::make('/', $https);
     }
 
     /**
@@ -119,7 +119,7 @@ class Url
      *
      * @return string
      */
-    public static function to($url = '', $https = null, $asset = false)
+    public static function make($url = '', $https = null, $asset = false)
     {
         $url = trim($url, '/');
 
@@ -171,7 +171,7 @@ class Url
      */
     public static function asHttps($url = '')
     {
-        return static::to($url, true);
+        return static::make($url, true);
     }
 
     /**
@@ -182,7 +182,7 @@ class Url
      *
      * @return string
      */
-    public static function toAsset($url, $https = null)
+    public static function makeForAsset($url, $https = null)
     {
         if (static::valid($url) || static::valid('http:' . $url)) {
             return $url;
@@ -196,7 +196,7 @@ class Url
             return rtrim($root, '/') . '/' . ltrim($url, '/');
         }
 
-        $url = static::to($url, $https, true);
+        $url = static::make($url, $https, true);
 
         // we do not need to come through the front controller.
         if ($app['index'] !== '') {
@@ -251,6 +251,6 @@ class Url
             $slug = '/' . $slug;
         }
 
-        return self::to($route, $https, $asset) . $slug;
+        return self::make($route, $https, $asset) . $slug;
     }
 }
