@@ -13,7 +13,7 @@ namespace Pimf\Util\Header;
  * @package Util_Header
  * @author  Gjero Krsteski <gjero@krsteski.de>
  */
-abstract class ResponseStatus
+class ResponseStatus
 {
     /**
      * Name and revision of the information protocol

@@ -9,7 +9,6 @@
 namespace Pimf\Util;
 
 use Pimf\Config;
-use Pimf\Sapi;
 
 /**
  * Manages a raw HTTP header sending.
@@ -17,7 +16,7 @@ use Pimf\Sapi;
  * @package Util
  * @author  Gjero Krsteski <gjero@krsteski.de>
  */
-class Header extends Header\ContentType
+class Header extends Header\ResponseStatus
 {
     /**
      * @var string
@@ -77,7 +76,7 @@ class Header extends Header\ContentType
      */
     protected static function view($code, $status, $exit = true)
     {
-        if (Sapi::isCli()) {
+        if (\Pimf\Sapi::isCli()) {
             echo $status . PHP_EOL;
             if ($exit) {
                 exit;

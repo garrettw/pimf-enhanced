@@ -34,34 +34,31 @@ class Logger
     /**
      * @var string
      */
-    private static $remoteIp;
+    private $remoteIp;
 
     /**
      * @var string
      */
-    private static $script;
-
-    /**
-     * @param string $remoteIp
-     * @param string $script
-     */
-    public static function setup($remoteIp, $script)
-    {
-        self::$remoteIp = $remoteIp;
-        self::$script = $script;
-    }
+    private $script;
 
     /**
      * Logger constructor.
+     *
+     * @param string $remoteIp
+     * @param string $script
      * @param Contracts\Streamable $infoHandle
      * @param Contracts\Streamable $warnHandle
      * @param Contracts\Streamable $errorHandle
      */
     public function __construct(
+        $remoteIp,
+        $script,
         Contracts\Streamable $infoHandle,
         Contracts\Streamable $warnHandle,
-        Contracts\Streamable $errorHandle)
-    {
+        Contracts\Streamable $errorHandle
+    ) {
+        $this->remoteIp = $remoteIp;
+        $this->script = $script;
         $this->infoHandle = $infoHandle->open();
         $this->warnHandle = $warnHandle->open();
         $this->errorHandle = $errorHandle->open();

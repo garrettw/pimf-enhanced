@@ -13,7 +13,7 @@ namespace Pimf\Util\Header;
  * @package Util_Header
  * @author  Gjero Krsteski <gjero@krsteski.de>
  */
-abstract class ContentType extends ResponseStatus
+class ContentType
 {
     public static function asJSON()
     {

@@ -37,21 +37,19 @@ class Clean
      */
     public static function xss($string, $charset = 'ISO-8859-1')
     {
-        $sanitize = new Sanitize();
-
-        $string = $sanitize::removeNullCharacters($string);
-        $string = $sanitize::validateStandardCharacterEntities($string);
-        $string = $sanitize::validateUTF16TwoByteEncoding($string);
-        $string = $sanitize::strangeThingsAreSubmitted($string);
-        $string = $sanitize::convertCharacterEntitiesToASCII($string, $charset);
-        $string = $sanitize::convertAllTabsToSpaces($string);
-        $string = $sanitize::makesPhpTagsSafe($string);
-        $string = $sanitize::compactAnyExplodedWords($string);
-        $string = $sanitize::removeDisallowedJavaScriptInLinksOrImgTags($string);
-        $string = $sanitize::removeJavaScriptEventHandlers($string);
-        $string = $sanitize::healNaughtyHTMLElements($string);
-        $string = $sanitize::healNaughtyScriptingElements($string);
-        $string = $sanitize::removeJavaScriptHardRedirects($string);
+        $string = Sanitize::removeNullCharacters($string);
+        $string = Sanitize::validateStandardCharacterEntities($string);
+        $string = Sanitize::validateUTF16TwoByteEncoding($string);
+        $string = Sanitize::strangeThingsAreSubmitted($string);
+        $string = Sanitize::convertCharacterEntitiesToASCII($string, $charset);
+        $string = Sanitize::convertAllTabsToSpaces($string);
+        $string = Sanitize::makesPhpTagsSafe($string);
+        $string = Sanitize::compactAnyExplodedWords($string);
+        $string = Sanitize::removeDisallowedJavaScriptInLinksOrImgTags($string);
+        $string = Sanitize::removeJavaScriptEventHandlers($string);
+        $string = Sanitize::healNaughtyHTMLElements($string);
+        $string = Sanitize::healNaughtyScriptingElements($string);
+        $string = Sanitize::removeJavaScriptHardRedirects($string);
 
         return $string;
     }

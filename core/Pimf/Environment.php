@@ -51,9 +51,9 @@ class Environment
     /**
      * @param array $server
      */
-    public function __construct(array $server)
+    public function __construct(Param $server)
     {
-        $this->data = new Param($server);
+        $this->data = $server;
     }
 
     /**
@@ -81,7 +81,7 @@ class Environment
      */
     public function isAjax()
     {
-        return $this->X_REQUESTED_WITH === 'XMLHttpRequest';
+        return ($this->X_REQUESTED_WITH === 'XMLHttpRequest');
     }
 
     /**
@@ -101,7 +101,7 @@ class Environment
      */
     public function isHttps()
     {
-        return $this->HTTPS === 'on';
+        return ($this->HTTPS === 'on');
     }
 
     /**
@@ -111,18 +111,17 @@ class Environment
      */
     public function getHost()
     {
-        if ($this->HOST) {
-
-            if (strpos($this->HOST, ':') !== false) {
-                $hostParts = explode(':', $this->HOST);
-
-                return $hostParts[0];
-            }
-
-            return $this->HOST;
+        if (!$this->HOST) {
+            return $this->SERVER_NAME;
         }
 
-        return $this->SERVER_NAME;
+        if (strpos($this->HOST, ':') !== false) {
+            $hostParts = explode(':', $this->HOST);
+
+            return $hostParts[0];
+        }
+
+        return $this->HOST;
     }
 
     /**

@@ -12,7 +12,7 @@ namespace Pimf;
  * @package Pimf
  * @author  Gjero Krsteski <gjero@krsteski.de>
  */
-class Param
+class Param implements \ArrayAccess
 {
     /**
      * @var \ArrayObject|null
@@ -22,9 +22,12 @@ class Param
     /**
      * @param array $data
      */
-    public function __construct(array $data = array())
+    public function __construct(array $data = [])
     {
-        $this->data = new \ArrayObject($data, \ArrayObject::STD_PROP_LIST + \ArrayObject::ARRAY_AS_PROPS);
+        $this->data = new \ArrayObject(
+            $data,
+            \ArrayObject::STD_PROP_LIST & \ArrayObject::ARRAY_AS_PROPS
+        );
     }
 
     /**
@@ -44,36 +47,74 @@ class Param
      */
     public function get($index, $defaultValue = null, $filtered = true)
     {
-        if ($this->data->offsetExists($index)) {
-
-            if ($filtered === true) {
-                // pretty high-level filtering here...
-                return self::filter($this->data->offsetGet($index));
-            }
-
-            return $this->data->offsetGet($index);
+        if (!$this->offsetExists($index)) {
+            return $defaultValue;
         }
 
-        return $defaultValue;
+        $rawData = $this->offsetGet($index);
+
+        if ($filtered !== true) {
+            return $rawData;
+        }
+
+        // pretty high-level filtering here...
+        if (!\is_array($rawData)) {
+            return \Pimf\Util\Character\Clean::xss($rawData);
+        }
+
+        return \array_map(
+            function ($value) {
+                return \Pimf\Util\Character\Clean::xss($value);
+            }, $rawData
+        );
     }
 
     /**
-     * Never ever (ever) trust foreign input introduced to your PHP code!
+     * Responds to: isset($param['index'])
      *
-     * @param mixed $rawData
+     * @param string|integer $offset The index or identifier
      *
-     * @return mixed
+     * @return bool
      */
-    public static function filter($rawData)
+    public function offsetExists($offset)
     {
-        return is_array($rawData)
+        return $this->data->offsetExists($offset);
+    }
 
-            ? array_map(
-                function ($value) {
-                    return \Pimf\Util\Character\Clean::xss($value);
-                }, $rawData
-            )
+    /**
+     * Responds to: $param['index']
+     *
+     * @param string|integer $offset The index or identifier
+     *
+     * @return mixed The value at the specified array index
+     */
+    public function offsetGet($offset)
+    {
+        return $this->data->offsetGet($offset);
+    }
 
-            : \Pimf\Util\Character\Clean::xss($rawData);
+    /**
+     * Responds to: $param['index'] = 'something';
+     *
+     * @param string|integer $offset The index or identifier
+     * @param mixed $value The value at the specified array index
+     *
+     * @throws \LogicException Object is immutable
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new \LogicException('Param objects are immutable');
+    }
+
+    /**
+     * Responds to: unset($param['index']);
+     *
+     * @param string|integer $offset The index or identifier
+     *
+     * @throws \LogicException Object is immutable
+     */
+    public function offsetUnset($offset)
+    {
+        throw new \LogicException('Param objects are immutable');
     }
 }

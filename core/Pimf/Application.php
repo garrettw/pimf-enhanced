@@ -53,25 +53,45 @@ final class Application
      *
      * @return boolean|null
      */
-    public function __construct(Config $conf, array $server = [])
+    public function __construct(Config $conf, Environment $server)
     {
-        $problems = [];
+        $this->env = $server;
 
+        $problems = [];
+        // nothing exceptionable should be happening in __construct()
         try {
 
-            $environment = $conf['environment'];
-            $appname = $conf['app.name'];
+            // this belongs in run() somehow, but $conf isn't there
+            \date_default_timezone_set($conf['timezone']);
 
-            date_default_timezone_set($conf['timezone']);
+            // this one is a mess
+            $this->setupUtils($conf['bootstrap.local_temp_directory'], $conf->get('logging.storage', 'file'));
 
-            $this->setupUtils($server, $conf['bootstrap.local_temp_directory'], $conf->get('logging.storage', 'file'));
-            $this->loadListeners(BASE_PATH . 'app/' . $appname . '/events.php');
-            $this->setupErrorHandling($environment);
-            $this->loadPdoDriver($environment, $conf[$environment . '.db'], $appname);
-            $this->loadRoutes(
-                $conf['app.routeable'],
-                BASE_PATH . 'app/' . $appname . '/routes.php'
-            );
+            // this needs to be done before much user app code is run
+            $this->setupErrorHandling($conf['environment']);
+
+            $appPath = BASE_PATH . 'app/' . $conf['app.name'];
+
+            // $this->loadListeners();
+            if (file_exists($appPath . '/events.php')) {
+                include_once $appPath . '/events.php';
+            }
+
+            // $this->loadPdoDriver();
+            $dbConf = $conf[$conf['environment'] . '.db'];
+            if (is_array($dbConf) && $conf['environment'] != 'testing') {
+                $this->em = new EntityManager(Pdo\Factory::get($dbConf), $conf['app.name']);
+            }
+
+            // $this->loadRoutes();
+            if ($conf['app.routeable'] === true && file_exists($appPath . '/routes.php')) {
+                $this->router = new Router();
+
+                foreach ((array)(include $routes) as $route) {
+                    $this->router->map($route);
+                }
+            }
+
 
         } catch (\Throwable $throwable) {
             $problems[] = $throwable->getMessage();
@@ -79,7 +99,14 @@ final class Application
             $problems[] = $exception->getMessage();
         }
 
-        $this->reportIf($problems, PHP_VERSION);
+        // $this->reportIf();
+        if (version_compare($version, 5.3) == -1) {
+            $problems[] = 'You have PHP ' . PHP_VERSION . ' and you need 5.3 or higher!';
+        }
+
+        if (!empty($problems)) {
+            die(implode(PHP_EOL . PHP_EOL, $problems));
+        }
     }
 
     /**
@@ -171,15 +198,9 @@ final class Application
      * @param $tmpPath
      * @param string $logging
      */
-    private function setupUtils(array $server, $tmpPath, $logging = 'file')
+    private function setupUtils($tmpPath, $logging = 'file')
     {
-        self::$env = new Environment($server);
-        $envData = self::$env->data();
-
-        Logger::setup(
-            self::$env->getIp(),
-            $envData->get('PHP_SELF', $envData->get('SCRIPT_NAME'))
-        );
+        $envData = $this->env->data();
 
         ResponseStatus::setup($envData->get('SERVER_PROTOCOL', 'HTTP/1.0'));
 
@@ -191,79 +212,28 @@ final class Application
         Uri::setup(self::$env->PATH_INFO, self::$env->REQUEST_URI);
         Uuid::setup(self::$env->getIp(), self::$env->getHost());
 
+        $remoteIp = $this->env->getIp();
+        $script = $envData->get('PHP_SELF', $envData->get('SCRIPT_NAME'));
+
         if ($logging === 'file') {
-            self::$logger = new Logger(
+            $this->logger = new Logger(
+                $remoteIp,
+                $script,
                 new Adapter\File($tmpPath, "pimf-logs.txt"),
                 new Adapter\File($tmpPath, "pimf-warnings.txt"),
                 new Adapter\File($tmpPath, "pimf-errors.txt")
             );
         } else {
-            self::$logger = new Logger(
+            $this->logger = new Logger(
+                $remoteIp,
+                $script,
                 new Adapter\Std(Adapter\Std::OUT),
                 new Adapter\Std(Adapter\Std::OUT),
                 new Adapter\Std(Adapter\Std::ERR)
             );
         }
 
-        self::$logger->init();
-    }
-
-    /**
-     * @param string $environment
-     * @param array $dbConf
-     * @param string $appName
-     */
-    private function loadPdoDriver($environment, $dbConf, $appName)
-    {
-        if (is_array($dbConf) && $environment != 'testing') {
-            self::$em = new EntityManager(Pdo\Factory::get($dbConf), $appName);
-        }
-    }
-
-    /**
-     * @param boolean $routeable
-     * @param string $routes Path to routes definition file.
-     */
-    private function loadRoutes($routeable, $routes)
-    {
-        if ($routeable === true && file_exists($routes)) {
-
-            self::$router = new Router();
-
-            foreach ((array)(include $routes) as $route) {
-
-                self::$router->map($route);
-
-            }
-        }
-    }
-
-    /**
-     * @param string $events Path to event listeners
-     */
-    private function loadListeners($events)
-    {
-        if (file_exists($events)) {
-            include_once $events;
-        }
-    }
-
-    /**
-     * @param array $problems
-     * @param float $version
-     * @param bool $die
-     *
-     * @return array|void
-     */
-    private function reportIf(array $problems, $version, $die = true)
-    {
-        if (version_compare($version, 5.3) == -1) {
-            $problems[] = 'You have PHP ' . $version . ' and you need 5.3 or higher!';
-        }
-
-        if (!empty($problems)) {
-            return ($die === true) ? die(implode(PHP_EOL . PHP_EOL, $problems)) : $problems;
-        }
+        $this->logger->init();
     }
 
     /**
