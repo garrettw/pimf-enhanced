@@ -41,7 +41,7 @@ class Core extends Base
             BASE_PATH . $app . '_templates/',
         );
 
-        echo 'Check app assets' . PHP_EOL;
+        echo 'Checking app assets ...' . PHP_EOL;
 
         foreach ($assets as $asset) {
 
@@ -54,31 +54,28 @@ class Core extends Base
             }
         }
 
-        echo 'Secure root directory' . PHP_EOL;
+        echo 'Securing root directory ...' . PHP_EOL;
         chmod(BASE_PATH, 0755);
 
-        echo 'Secure .htaccess' . PHP_EOL;
+        echo 'Securing .htaccess ...' . PHP_EOL;
         chmod(BASE_PATH . '.htaccess', 0644);
 
-        echo 'Secure index.php' . PHP_EOL;
+        echo 'Securing index.php ...' . PHP_EOL;
         chmod(BASE_PATH . 'index.php', 0644);
 
-        echo 'Secure autoload.core.php' . PHP_EOL;
+        echo 'Securing pimf-framework/autoload.core.php ...' . PHP_EOL;
         chmod(BASE_PATH . 'pimf-framework/autoload.core.php', 0644);
 
-        echo 'Create logging files' . PHP_EOL;
-
-        $directory = Config::get('bootstrap.local_temp_directory');
-
-        $handle = fopen($file = $directory . 'pimf-logs.txt', "at+");
-        fclose($handle);
-        chmod($file, 0777);
-        $handle = fopen($file = $directory . 'pimf-warnings.txt', "at+");
-        fclose($handle);
-        chmod($file, 0777);
-        $handle = fopen($file = $directory . 'pimf-errors.txt', "at+");
-        fclose($handle);
-        chmod($file, 0777);
+        echo 'Creating log files ...' . PHP_EOL;
+        array_walk(
+            ['logs', 'warnings', 'errors'],
+            function($value, $key, $directory) {
+                $file = $directory . "pimf-$value.txt";
+                fclose(fopen($file, "at+"));
+                chmod($file, 0777);
+            },
+            Config::get('bootstrap.local_temp_directory')
+        );
 
         clearstatcache();
     }
