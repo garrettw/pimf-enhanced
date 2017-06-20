@@ -105,7 +105,7 @@ final class Application
         }
 
         if (!empty($problems)) {
-            die(implode(PHP_EOL . PHP_EOL, $problems));
+            throw new \RuntimeException(implode(PHP_EOL . PHP_EOL, $problems));
         }
     }
 
@@ -128,7 +128,7 @@ final class Application
             $cli = Cli::parse((array)self::$env->argv);
             if (count($cli) < 1 || isset($cli['list'])) {
                 Cli::absorb();
-                exit(0);
+                return;
             }
         }
 
