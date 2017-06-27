@@ -64,6 +64,7 @@ class Pdo extends Storage
 
             return unserialize($cache->value);
         }
+        return null;
     }
 
     /**
@@ -84,7 +85,7 @@ class Pdo extends Storage
     {
         $key = $this->key . $key;
         $value = serialize($value);
-        $expiration = $this->expiration($minutes);
+        $expiration = self::expiration($minutes);
 
         try {
             $sth = $this->pdo->prepare(

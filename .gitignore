@@ -1,28 +1,8 @@
-# OS or Editor folders
-.cache
-.project
-.settings
-.tmproj
-*.esproj
+.idea
 .c9
-
-# Numerous always-ignore extensions
-*.diff
-*.err
-*.orig
-*.log
-*.rej
-*.vi
-*~
-*.sass-cache
-
-# Folders to ignore
-.hg
-.svn
-.CVS
-intermediate
-publish
 _coverage
 coverage
 vendor
 build
+composer.lock
+composer.phar

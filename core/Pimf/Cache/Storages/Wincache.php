@@ -41,6 +41,7 @@ class Wincache extends Storage
         if (($cache = wincache_ucache_get($this->key . $key)) !== false) {
             return $cache;
         }
+        return null;
     }
 
     /**

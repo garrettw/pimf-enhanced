@@ -60,6 +60,7 @@ class Redis extends Storage
         if (!is_null($cache = $this->redis->get($key))) {
             return unserialize($cache);
         }
+        return null;
     }
 
     /**

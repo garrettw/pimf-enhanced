@@ -56,6 +56,7 @@ class Pdo extends Storage implements Cleanable
                     'data'          => unserialize($session->data)
                 );
             }
+            return null;
         } catch (\PDOException $pdoe) {
             return null;
         }
