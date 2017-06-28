@@ -62,7 +62,7 @@ class Serializer
             $capsule->object = self::unmask($capsule->object);
         }
 
-        if ($capsule->type == 'SimpleXMLElement') {
+        if ($capsule->type === 'SimpleXMLElement') {
             $capsule->object = simplexml_load_string($capsule->object);
         }
 

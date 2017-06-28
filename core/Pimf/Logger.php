@@ -141,9 +141,9 @@ class Logger
     {
         $msg = $this->format($msg, $severity);
 
-        if ($severity == 'WARNING') {
+        if ($severity === 'WARNING') {
             fwrite($this->warnHandle, $msg);
-        } elseif ($severity == 'ERROR') {
+        } elseif ($severity === 'ERROR') {
             fwrite($this->errorHandle, $msg);
         } else {
             fwrite($this->infoHandle, $msg);
@@ -180,14 +180,14 @@ class Logger
         $fileName = self::$script;
         $lastSlashIndex = strrpos($fileName, "/");
 
-        if ($lastSlashIndex !== false) {
+        if (is_int($lastSlashIndex)) {
             $fileName = substr($fileName, $lastSlashIndex + 1);
         }
 
         $msg = date("m-d-Y") . " " . date("G:i:s") . " " . self::$remoteIp
-            .= str_repeat(" ", 15 - strlen(self::$remoteIp))
-            .= " " . $severity . ": "
-            .= $fileName . "\t: " . $message . "\r\n"
+            . str_repeat(" ", 15 - strlen(self::$remoteIp))
+            . " " . $severity . ": "
+            . $fileName . "\t: " . $message . "\r\n"
         ;
 
         return $msg;

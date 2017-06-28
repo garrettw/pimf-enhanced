@@ -38,7 +38,9 @@ class Wincache extends Storage
      */
     protected function retrieve($key)
     {
-        if (($cache = wincache_ucache_get($this->key . $key)) !== false) {
+        $cache = wincache_ucache_get($this->key . $key, $success);
+
+        if ($success === true) {
             return $cache;
         }
         return null;

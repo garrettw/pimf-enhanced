@@ -71,7 +71,7 @@ class Pdo extends Storage implements Cleanable
      */
     public function save($session, $config, $exists)
     {
-        if ($exists) {
+        if ($exists === true) {
             $sth = $this->pdo->prepare(
                 "INSERT INTO sessions (id, last_activity, data) VALUES (:id, :last_activity, :data)"
             );

@@ -125,7 +125,7 @@ class Message
      */
     public function format()
     {
-        if ($this->getMessage() == '' || !$this->getMessage()) {
+        if (empty($this->getMessage())) {
             return '';
         }
 

@@ -57,7 +57,7 @@ class Cookie
      */
     public static function has($name)
     {
-        return (static::get($name) !== null);
+        return (!is_null(static::get($name)));
     }
 
     /**
@@ -98,7 +98,7 @@ class Cookie
      */
     public static function put($name, $value, $expiration = 0, $path = '/', $domain = null, $secure = false)
     {
-        if ($expiration !== 0) {
+        if ($expiration > 0) {
             $expiration = time() + ($expiration * 60);
         }
 
@@ -176,7 +176,7 @@ class Cookie
         $value = implode('+', array_slice($segments, 1));
 
         // check the SHA-1 hash from the cookie.
-        if ($segments[0] == static::hash($value)) {
+        if ($segments[0] === static::hash($value)) {
             return $value;
         }
 

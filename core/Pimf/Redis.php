@@ -94,7 +94,7 @@ class Redis
 
             $cache = Config::get('cache');
 
-            if (!isset($cache['storage']) || $cache['storage'] != 'redis') {
+            if (!isset($cache['storage']) || $cache['storage'] !== 'redis') {
                 throw new \RuntimeException("Redis database [$name] is not defined.");
             }
 
@@ -224,7 +224,7 @@ class Redis
      */
     protected function bulk($head)
     {
-        if ($head == '$-1') {
+        if ($head === '$-1') {
             return null;
         }
 
@@ -256,7 +256,9 @@ class Redis
      */
     protected function multibulk($head)
     {
-        if (($count = substr($head, 1)) == '-1') {
+        $count = substr($head, 1);
+
+        if ($count === '-1') {
             return null;
         }
 

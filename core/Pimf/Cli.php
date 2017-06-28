@@ -55,7 +55,8 @@ final class Cli
 
                     array_map(
                         function (\ReflectionMethod $method) {
-                            if (false !== $command = strstr($method->name, 'CliAction', true)) {
+                            $command = strstr($method->name, 'CliAction', true);
+                            if (is_string($command)) {
                                 echo PHP_EOL . ' action: ' . $command . ' ' . PHP_EOL;
                             }
                         }, $methods
@@ -79,7 +80,7 @@ final class Cli
     {
         $classes = array();
 
-        if (!$root && !$coreClr && !$appClr) {
+        if ($root === null && $coreClr === null && $appClr === null) {
             $coreClr = str_replace('/', DS, BASE_PATH . '/pimf-framework/core/Pimf/Controller/');
             $appClr = str_replace('/', DS, BASE_PATH . '/app/' . Config::get('app.name') . '/Controller/');
         }

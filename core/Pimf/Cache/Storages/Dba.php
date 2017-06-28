@@ -197,15 +197,14 @@ class Dba extends Storage
      */
     public function clean()
     {
-        $dba = $this->dba;
-        $key = dba_firstkey($dba);
+        $key = dba_firstkey($this->dba);
 
-        while ($key !== false && $key !== null) {
+        while (is_string($key)) {
             $this->retrieve($key);
-            $key = dba_nextkey($dba);
+            $key = dba_nextkey($this->dba);
         }
 
-        return dba_optimize($dba);
+        return dba_optimize($this->dba);
     }
 
     /**

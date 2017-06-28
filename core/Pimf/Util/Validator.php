@@ -59,7 +59,7 @@ class Validator
      */
     public function email($field)
     {
-        return (filter_var(trim($this->get($field)), FILTER_VALIDATE_EMAIL) !== false) ?: $this->addError($field,
+        return ((bool) filter_var(trim($this->get($field)), FILTER_VALIDATE_EMAIL)) ?: $this->addError($field,
             __FUNCTION__);
     }
 
@@ -72,7 +72,7 @@ class Validator
      */
     public function ip($field)
     {
-        return (filter_var(trim($this->get($field)), FILTER_VALIDATE_IP) !== false) ?: $this->addError($field,
+        return ((bool) filter_var(trim($this->get($field)), FILTER_VALIDATE_IP)) ?: $this->addError($field,
             __FUNCTION__);
     }
 
@@ -85,7 +85,7 @@ class Validator
      */
     public function url($field)
     {
-        return (filter_var(trim($this->get($field)), FILTER_VALIDATE_URL) !== false) ?: $this->addError($field,
+        return ((bool) filter_var(trim($this->get($field)), FILTER_VALIDATE_URL)) ?: $this->addError($field,
             __FUNCTION__);
     }
 
@@ -103,10 +103,10 @@ class Validator
         $field1value = $this->get($field1);
         $field2value = $this->get($field2);
 
-        $valid = (strcmp($field1value, $field2value) == 0);
+        $valid = (strcmp($field1value, $field2value) === 0);
 
-        if ($caseInsensitive) {
-            $valid = (strcmp(strtolower($field1value), strtolower($field2value)) == 0);
+        if ($caseInsensitive === true) {
+            $valid = (strcmp(strtolower($field1value), strtolower($field2value)) === 0);
         }
 
         return ($valid === true) ?: $this->addError($field1 . "|" . $field2, __FUNCTION__);
@@ -142,7 +142,7 @@ class Validator
     }
 
     /**
-     * length functions on a field takes <, >, ==, <=, and >= as operators.
+     * length functions on a field takes <, >, ===, <=, and >= as operators.
      *
      * @param string $field
      * @param string $operator
@@ -156,7 +156,7 @@ class Validator
     }
 
     /**
-     * Number value functions takes <, >, ==, <=, and >= as operators.
+     * Number value functions takes <, >, ===, <=, and >= as operators.
      *
      * @param string     $field
      * @param string     $operator
@@ -282,15 +282,15 @@ class Validator
      */
     protected function middleware($fieldName, $comparing, $operator, $expecting)
     {
-        if (in_array($operator, array("<", ">", "==", "<=", ">="), true)) {
+        if (in_array($operator, array("<", ">", "===", "<=", ">="), true)) {
             $func = function($a, $b) use ($operator) {
                 switch ($operator){
                     case "<":
                         return ($a < $b);
                     case ">":
                         return ($a > $b);
-                    case "==":
-                        return ($a == $b);
+                    case "===":
+                        return ($a === $b);
                     case ">=":
                         return ($a >= $b);
                     case "<=":
@@ -304,9 +304,9 @@ class Validator
         return false;
     }
 
-    protected static function between($fieldValue, $min, $max, $inclusive)
+    protected static function between($fieldValue, $min, $max, $inclusive = false)
     {
-        if ($inclusive) {
+        if ($inclusive === true) {
             return ($fieldValue <= $max && $fieldValue >= $min);
         }
 

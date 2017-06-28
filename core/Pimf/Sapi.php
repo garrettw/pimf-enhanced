@@ -24,7 +24,7 @@ abstract class Sapi
      */
     public static function isWeb()
     {
-        return self::isApache() || self::isIIS() || self::isCgi() || self::isBuiltInWebServer() || self::isHHVM();
+        return (self::isApache() || self::isIIS() || self::isCgi() || self::isBuiltInWebServer() || self::isHHVM());
     }
 
     /**
@@ -34,7 +34,7 @@ abstract class Sapi
      */
     public static function isCli()
     {
-        return PHP_SAPI === 'cli';
+        return (PHP_SAPI === 'cli');
     }
 
     /**
@@ -44,7 +44,7 @@ abstract class Sapi
      */
     public static function isCgi()
     {
-        return PHP_SAPI === 'cgi-fcgi' || PHP_SAPI === 'cgi';
+        return (PHP_SAPI === 'cgi-fcgi' || PHP_SAPI === 'cgi');
     }
 
     /**
@@ -54,7 +54,7 @@ abstract class Sapi
      */
     public static function isApache()
     {
-        return PHP_SAPI === 'apache2handler' || PHP_SAPI === 'apachehandler';
+        return (PHP_SAPI === 'apache2handler' || PHP_SAPI === 'apachehandler');
     }
 
     /**
@@ -64,7 +64,7 @@ abstract class Sapi
      */
     public static function isIIS()
     {
-        return PHP_SAPI == 'isapi';
+        return (PHP_SAPI === 'isapi');
     }
 
     /**
@@ -74,7 +74,7 @@ abstract class Sapi
      */
     public static function isBuiltInWebServer()
     {
-        return PHP_SAPI == 'cli-server';
+        return (PHP_SAPI === 'cli-server');
     }
 
     /**
@@ -84,7 +84,7 @@ abstract class Sapi
      */
     public static function isHHVM()
     {
-        return PHP_SAPI == 'srv';
+        return (PHP_SAPI === 'srv');
     }
 
     /**

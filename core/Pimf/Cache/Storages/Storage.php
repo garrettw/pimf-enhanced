@@ -23,7 +23,7 @@ abstract class Storage implements \ArrayAccess
      */
     public function has($key)
     {
-        return ($this->get($key) !== null);
+        return (is_null($this->get($key))) ? false : true;
     }
 
     /**
@@ -58,7 +58,8 @@ abstract class Storage implements \ArrayAccess
      */
     public function get($key, $default = null)
     {
-        return (!is_null($item = $this->retrieve($key))) ? $item : $default;
+        $item = $this->retrieve($key);
+        return (isset($item)) ? $item : $default;
     }
 
     /**

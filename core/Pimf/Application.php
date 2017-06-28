@@ -73,18 +73,20 @@ final class Application
             $appPath = BASE_PATH . 'app/' . $conf['app.name'];
 
             // $this->loadListeners();
-            if (file_exists($appPath . '/events.php')) {
-                include_once $appPath . '/events.php';
+            $events = $appPath . '/events.php';
+            if (file_exists($events)) {
+                include_once $events;
             }
 
             // $this->loadPdoDriver();
             $dbConf = $conf[$conf['environment'] . '.db'];
-            if (is_array($dbConf) && $conf['environment'] != 'testing') {
+            if (is_array($dbConf) && $conf['environment'] === 'production') {
                 $this->em = new EntityManager(Pdo\Factory::get($dbConf), $conf['app.name']);
             }
 
             // $this->loadRoutes();
-            if ($conf['app.routeable'] === true && file_exists($appPath . '/routes.php')) {
+            $routes = $appPath . '/routes.php';
+            if ($conf['app.routeable'] === true && file_exists($routes)) {
                 $this->router = new Router();
 
                 foreach ((array)(include $routes) as $route) {
@@ -100,7 +102,7 @@ final class Application
         }
 
         // $this->reportIf();
-        if (version_compare($version, 5.3) == -1) {
+        if (version_compare($version, 5.3) === -1) {
             $problems[] = 'You have PHP ' . PHP_VERSION . ' and you need 5.3 or higher!';
         }
 
@@ -135,22 +137,22 @@ final class Application
         $prefix = Str::ensureTrailing('\\', Config::get('app.name'));
         $repository = BASE_PATH . 'app/' . Config::get('app.name') . '/Controller';
 
-        if (isset($cli['controller']) && $cli['controller'] == 'core') {
+        if (isset($cli['controller']) && $cli['controller'] === 'core') {
             $prefix = 'Pimf\\';
             $repository = BASE_PATH . 'pimf-framework/core/Pimf/Controller';
         }
 
         $request = new Request($get, $post, $cookie, $cli, $files, self::$env);
         $resolver = new Resolver($request, $repository, $prefix, self::$router);
-        $sessionized = (Sapi::isWeb() && Config::get('session.storage') !== '');
+        $sessionized = (Sapi::isWeb() && !empty(Config::get('session.storage')));
 
-        if ($sessionized) {
+        if ($sessionized === true) {
             Session::load();
         }
 
         $pimf = $resolver->process(self::$env, self::$em, self::$logger);
 
-        if ($sessionized) {
+        if ($sessionized === true) {
             Session::save();
             Cookie::send();
         }
@@ -165,7 +167,7 @@ final class Application
      */
     private function setupErrorHandling($environment)
     {
-        if ($environment == 'testing') {
+        if ($environment === 'testing') {
             error_reporting(E_ALL | E_STRICT);
         } else {
 

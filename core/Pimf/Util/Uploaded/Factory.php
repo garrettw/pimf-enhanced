@@ -55,9 +55,9 @@ abstract class Factory
             $keys = array_keys($file);
             sort($keys);
 
-            if ($keys == self::$fileKeys) {
+            if ($keys === self::$fileKeys) {
 
-                if (UPLOAD_ERR_NO_FILE == $file['error']) {
+                if (UPLOAD_ERR_NO_FILE === $file['error']) {
                     return null;
                 }
 
@@ -91,7 +91,7 @@ abstract class Factory
         $keys = array_keys($data);
         sort($keys);
 
-        if (self::$fileKeys != $keys || !isset($data['name']) || !is_array($data['name'])) {
+        if (self::$fileKeys !== $keys || !isset($data['name']) || !is_array($data['name'])) {
             return $data;
         }
 

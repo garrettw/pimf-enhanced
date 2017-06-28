@@ -53,7 +53,7 @@ class Param implements \ArrayAccess
 
         $rawData = $this->offsetGet($index);
 
-        if ($filtered !== true) {
+        if ($filtered === false) {
             return $rawData;
         }
 

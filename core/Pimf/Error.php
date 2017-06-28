@@ -34,7 +34,7 @@ class Error
 
         if (Config::get('error.debug_info') === true) {
             echo static::format($exception, Sapi::isCli());
-            if ($exit) {
+            if ($exit === true) {
                 throw $exception;
             }
         }

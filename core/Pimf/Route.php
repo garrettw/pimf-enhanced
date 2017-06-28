@@ -164,14 +164,14 @@ class Route
 
         if (strlen($base_path) > 0) {
             // if $base_path exists
-            if (strpos($uri, $base_path) == 0) {
+            if (strpos($uri, $base_path) === 0) {
                 $uri = substr($uri, strlen($base_path));
             } else {
                 throw \RuntimeException('request uri does not match site base url');
             }
         }
 
-        if ($pos !== false) {
+        if (is_int($pos)) {
             return substr($uri, 0, $pos);
         }
 

@@ -45,10 +45,11 @@ class Memcached extends Storage
      */
     protected function retrieve($key)
     {
-        if (($cache = $this->memcache->get($this->key . $key)) !== false) {
-            return $cache;
+        $cache = $this->memcache->get($this->key . $key);
+        if ($cache === false) {
+            return null;
         }
-        return null;
+        return $cache;
     }
 
     /**

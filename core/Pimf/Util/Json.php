@@ -58,28 +58,17 @@ class Json
      */
     protected static function handleError($status)
     {
-        $msg = '';
+        $msg = [
+            JSON_ERROR_DEPTH => 'Maximum stack depth exceeded',
+            JSON_ERROR_STATE_MISMATCH => 'Underflow or the modes mismatch',
+            JSON_ERROR_CTRL_CHAR => 'Unexpected control character found',
+            JSON_ERROR_SYNTAX => 'Syntax error, malformed JSON',
+            // alias for JSON_ERROR_UTF8 due to Availability PHP 5.3.3
+            5 => 'Malformed UTF-8 characters, possibly incorrectly encoded',
+        ];
 
-        switch ($status) {
-            case JSON_ERROR_DEPTH:
-                $msg = 'Maximum stack depth exceeded';
-                break;
-            case JSON_ERROR_STATE_MISMATCH:
-                $msg = 'Underflow or the modes mismatch';
-                break;
-            case JSON_ERROR_CTRL_CHAR:
-                $msg = 'Unexpected control character found';
-                break;
-            case JSON_ERROR_SYNTAX:
-                $msg = 'Syntax error, malformed JSON';
-                break;
-            case 5: //alias for JSON_ERROR_UTF8 due to Availability PHP 5.3.3
-                $msg = 'Malformed UTF-8 characters, possibly incorrectly encoded';
-                break;
-        }
-
-        if ($msg !== '') {
-            throw new \RuntimeException($msg);
+        if (isset($msg[$status])) {
+            throw new \RuntimeException($msg[$status]);
         }
     }
 }

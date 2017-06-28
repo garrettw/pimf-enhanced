@@ -47,7 +47,10 @@ class View implements Renderable
     public function __construct($template = 'default.phtml', array $data = array(), $path = null)
     {
         $this->data = new \ArrayObject($data, \ArrayObject::ARRAY_AS_PROPS);
-        $this->path = (!$path) ? BASE_PATH . 'app/' . Config::get('app.name') . '/_templates' : $path;
+        $this->path = (isset($path))
+            ? $path
+            : BASE_PATH . 'app/' . Config::get('app.name') . '/_templates'
+        ;
         $this->template = (string)$template;
     }
 

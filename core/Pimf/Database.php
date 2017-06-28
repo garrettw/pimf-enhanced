@@ -38,7 +38,7 @@ class Database extends \PDO
      */
     public function beginTransaction()
     {
-        if ($this->transLevel == 0 || !$this->nestable()) {
+        if ($this->transLevel === 0 || $this->nestable() === false) {
             parent::beginTransaction();
         } else {
             $this->exec("SAVEPOINT LEVEL{$this->transLevel}");
@@ -54,7 +54,7 @@ class Database extends \PDO
     {
         $this->transLevel--;
 
-        if ($this->transLevel == 0 || !$this->nestable()) {
+        if ($this->transLevel === 0 || $this->nestable() === false) {
             parent::commit();
         } else {
             $this->exec("RELEASE SAVEPOINT LEVEL{$this->transLevel}");
@@ -67,13 +67,13 @@ class Database extends \PDO
      */
     public function rollBack()
     {
-        if ($this->transLevel == 0) {
+        if ($this->transLevel === 0) {
             throw new \LogicException('trying to rollback without a transaction-start', 25000);
         }
 
         $this->transLevel--;
 
-        if ($this->transLevel == 0 || !$this->nestable()) {
+        if ($this->transLevel === 0 || $this->nestable() === false) {
             parent::rollBack();
         } else {
             $this->exec("ROLLBACK TO SAVEPOINT LEVEL{$this->transLevel}");

@@ -171,6 +171,6 @@ class Event
             }
         }
 
-        return $halt ? null : $responses;
+        return ($halt === false) ? $responses : null;
     }
 }

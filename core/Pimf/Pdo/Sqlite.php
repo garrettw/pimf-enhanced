@@ -27,7 +27,7 @@ class Sqlite extends Connector
 
         // SQLite provides supported for "in-memory" databases, which exist only for
         // lifetime of the request. These are mainly for tests.
-        if ($config['database'] == ':memory:') {
+        if ($config['database'] === ':memory:') {
             return new \Pimf\Database('sqlite::memory:', null, null, $options);
         }
 

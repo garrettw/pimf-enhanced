@@ -57,13 +57,13 @@ final class Uuid
      */
     private static function getNodeId()
     {
-        if (self::$hostIp !== null) {
+        if (is_string(self::$hostIp)) {
             return ip2long(self::$hostIp);
         }
 
         self::$hostIp = '127.0.0.1';
 
-        if (self::$hostName !== null) {
+        if (is_string(self::$hostName)) {
             self::$hostIp = crc32(self::$hostName);
         }
 

@@ -71,7 +71,7 @@ abstract class Storage
         // we'll find an random ID here.
         do {
             $session = $this->load($key = Character::random(40));
-        } while ($session !== null);
+        } while (isset($session) === true);
 
         return $key;
     }

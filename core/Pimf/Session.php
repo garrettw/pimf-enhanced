@@ -142,7 +142,7 @@ class Session
      */
     public static function started()
     {
-        return (static::$instance !== null);
+        return isset(static::$instance);
     }
 
     /**

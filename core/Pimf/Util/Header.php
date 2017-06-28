@@ -64,7 +64,7 @@ class Header extends Header\ResponseStatus
     public static function toLocation($url, $exit = true)
     {
         header('Location: ' . $url);
-        if ($exit) {
+        if ($exit === true) {
             exit(1);
         }
     }
@@ -78,7 +78,7 @@ class Header extends Header\ResponseStatus
     {
         if (\Pimf\Sapi::isCli()) {
             echo $status . PHP_EOL;
-            if ($exit) {
+            if ($exit === true) {
                 exit;
             }
         }
@@ -92,13 +92,13 @@ class Header extends Header\ResponseStatus
 
         if (file_exists($appTpl) && is_readable($appTpl)) {
             include $appTpl;
-            if ($exit) {
+            if ($exit === true) {
                 exit(1);
             }
         }
 
         include $coreTpl;
-        if ($exit) {
+        if ($exit === true) {
             exit(1);
         }
     }
@@ -150,7 +150,7 @@ class Header extends Header\ResponseStatus
     {
         $modifiedSince = strtotime(preg_replace('/;.*$/', '', self::$IfModifiedSince));
 
-        return !($modifiedSince >= $mtime || self::$IfNoneMatch == $etag);
+        return !($modifiedSince >= $mtime || self::$IfNoneMatch === $etag);
     }
 
     /**
@@ -214,7 +214,7 @@ class Header extends Header\ResponseStatus
      */
     public static function sendDownloadDialog($fileOrString, $fileName, $exit = true)
     {
-        $disposition = (false !== strpos(self::$userAgent, 'MSIE 5.5')) ? '' : 'attachment; ';
+        $disposition = (is_int(strpos(self::$userAgent, 'MSIE 5.5'))) ? '' : 'attachment; ';
 
         header("Pragma: public");
         header("Expires: 0");
@@ -228,7 +228,7 @@ class Header extends Header\ResponseStatus
             echo $fileOrString;
         }
 
-        if ($exit) {
+        if ($exit === true) {
             exit(0);
         }
     }

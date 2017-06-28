@@ -99,7 +99,7 @@ class Xml
      */
     public static function toArray(\SimpleXMLElement $xml, $namespace = null)
     {
-        if ($namespace !== null) {
+        if (is_string($namespace)) {
 
             $namespaces = $xml->getNamespaces();
 

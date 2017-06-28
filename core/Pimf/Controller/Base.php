@@ -86,14 +86,14 @@ abstract class Base
      */
     public function render()
     {
-        if (Sapi::isCli() && Config::get('environment') == 'production') {
+        if (Sapi::isCli() && Config::get('environment') === 'production') {
             $suffix = 'CliAction';
             $action = $this->request->fromCli()->get('action', 'index');
         } else {
 
             $suffix = 'Action';
 
-            if ($this->request->getMethod() != 'GET' && $this->request->getMethod() != 'POST') {
+            if (!($this->request->getMethod() === 'GET' || $this->request->getMethod() === 'POST')) {
 
                 $redirectUrl = new Value($this->env->REDIRECT_URL);
                 $redirectUrl = $redirectUrl->deleteLeading('/')->deleteTrailing('/')->explode('/');

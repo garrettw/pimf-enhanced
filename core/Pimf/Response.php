@@ -140,7 +140,7 @@ class Response
         }
 
         echo '' . $body;
-        if ($exit) {
+        if ($exit === true) {
             exit(0);
         }
     }
@@ -214,7 +214,7 @@ class Response
      */
     private function preventMultipleCaching()
     {
-        if ($this->requestMethod != 'GET') {
+        if ($this->requestMethod !== 'GET') {
             throw new \RuntimeException('HTTP cache headers can only take effect if request was sent via GET method!');
         }
 

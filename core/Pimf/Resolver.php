@@ -66,12 +66,11 @@ class Resolver
             }
         }
 
-        if (Sapi::isCli() && Config::get('environment') == 'production') {
-            $controllerName = $request->fromCli()->get('controller');
-        }
-
-        if (!$controllerName) {
-            $controllerName = Config::get('app.default_controller');
+        if (Sapi::isCli() && Config::get('environment') === 'production') {
+            $controllerName = $request->fromCli()->get(
+                'controller',
+                Config::get('app.default_controller') // default fallback
+            );
         }
 
         $this->repositoryPath = $repositoryPath;

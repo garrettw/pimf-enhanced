@@ -25,7 +25,7 @@ class Character
      */
     public static function isSerialized($string)
     {
-        return (unserialize($string) !== false || $string == 'b:0;');
+        return ((bool) unserialize($string) || $string === 'b:0;');
     }
 
     /**
@@ -37,8 +37,8 @@ class Character
      */
     public static function checkUtf8Encoding($string)
     {
-        if (!mb_check_encoding($string, 'UTF-8') ||
-            !$string == mb_convert_encoding(mb_convert_encoding($string, 'UTF-32', 'UTF-8'), 'UTF-8', 'UTF-32')
+        if (mb_check_encoding($string, 'UTF-8') === false ||
+            $string !== mb_convert_encoding(mb_convert_encoding($string, 'UTF-32', 'UTF-8'), 'UTF-8', 'UTF-32')
         ) {
             return false;
         }
@@ -211,7 +211,7 @@ class Character
     public static function contains($haystack, $needle)
     {
         foreach ((array)$needle as $n) {
-            if (strpos($haystack, $n) !== false) {
+            if (is_int(strpos($haystack, $n))) {
                 return true;
             }
         }
@@ -229,7 +229,7 @@ class Character
      */
     public static function startsWith($haystack, $needle)
     {
-        return strpos($haystack, $needle) === 0;
+        return (strpos($haystack, $needle) === 0);
     }
 
     /**
@@ -242,7 +242,7 @@ class Character
      */
     public static function endsWith($haystack, $needle)
     {
-        return $needle == substr($haystack, strlen($haystack) - strlen($needle));
+        return ($needle === substr($haystack, strlen($haystack) - strlen($needle)));
     }
 
     /**
@@ -258,10 +258,10 @@ class Character
      */
     public static function matches($pattern, $value)
     {
-        if ($pattern !== '/') {
-            $pattern = str_replace('*', '(.*)', $pattern) . '\z';
-        } else {
+        if ($pattern === '/') {
             $pattern = '^/$';
+        } else {
+            $pattern = str_replace('*', '(.*)', $pattern) . '\z';
         }
 
         return (bool)preg_match('#' . $pattern . '#', $value);

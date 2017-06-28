@@ -71,7 +71,7 @@ class Config implements \ArrayAccess
      */
     public function offsetExists($offset)
     {
-        return ($this->get($offset, null) !== null);
+        return (!is_null($this->get($offset)));
     }
 
     /**

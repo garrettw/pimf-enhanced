@@ -98,16 +98,14 @@ class Url
         if (isset(static::$base)) {
             return static::$base;
         }
-
+        $base = self::$url;
         $url = Config::get('app.url');
 
-        if ($url !== '') {
+        if (!empty($url)) {
             $base = $url;
-        } else {
-            $base = self::$url;
         }
 
-        return static::$base = $base;
+        return (static::$base = $base);
     }
 
     /**
@@ -144,7 +142,7 @@ class Url
     {
         $root = static::base();
 
-        if (!$asset) {
+        if ($asset === false) {
             $root .= '/' . Config::get('app.index');
         }
 
@@ -189,17 +187,17 @@ class Url
         }
 
         $app = Config::get('app');
-        $root = ($app['asset_url'] != '') ? $app['asset_url'] : false;
+        $root = (!empty($app['asset_url'])) ? $app['asset_url'] : false;
 
         // shoot us through a different server or third-party content delivery network.
-        if ($root) {
+        if (is_string($root)) {
             return rtrim($root, '/') . '/' . ltrim($url, '/');
         }
 
         $url = static::make($url, $https, true);
 
         // we do not need to come through the front controller.
-        if ($app['index'] !== '') {
+        if (!empty($app['index'])) {
             $url = str_replace($app['index'] . '/', '', $url);
         }
 
@@ -219,7 +217,7 @@ class Url
             return true;
         }
 
-        return filter_var($url, FILTER_VALIDATE_URL) !== false;
+        return (bool) filter_var($url, FILTER_VALIDATE_URL);
     }
 
     /**
@@ -247,7 +245,7 @@ class Url
         // otherwise PIMF will serve you cleaner URLs
         $slug = implode('/', $params);
 
-        if ($slug != '') {
+        if (!empty($slug)) {
             $slug = '/' . $slug;
         }
 

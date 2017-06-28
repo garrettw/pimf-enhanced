@@ -79,7 +79,7 @@ class Memcached
      */
     protected static function connect(array $servers, $memcache = null)
     {
-        if (!$memcache) {
+        if ($memcache === null) {
             $memcache = new \Memcached();
         }
 

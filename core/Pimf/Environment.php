@@ -115,7 +115,7 @@ class Environment
             return $this->SERVER_NAME;
         }
 
-        if (strpos($this->HOST, ':') !== false) {
+        if (is_int(strpos($this->HOST, ':'))) {
             $hostParts = explode(':', $this->HOST);
 
             return $hostParts[0];
@@ -208,7 +208,7 @@ class Environment
         $header = str_replace('-', '_', strtoupper($header));
         $value = $this->{'HTTP_' . $header};
 
-        if (!$value) {
+        if ($value === null) {
             $headers = $this->getRequestHeaders();
             $value = !empty($headers[$header]) ? $headers[$header] : null;
         }

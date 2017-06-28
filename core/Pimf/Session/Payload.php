@@ -79,7 +79,7 @@ class Payload
      */
     public function load($key)
     {
-        if ($key !== null) {
+        if (is_string($key)) {
             $this->session = $this->storage->load($key);
         }
 
@@ -121,7 +121,7 @@ class Payload
      */
     public function has($key)
     {
-        return ($this->get($key) !== null);
+        return (!is_null($this->get($key)));
     }
 
     /**
@@ -136,22 +136,19 @@ class Payload
     {
         $session = $this->session['data'];
 
-        // check first for the item in the general session data.
-        if (null !== ($value = $this->isIn($key, $session))) {
-            return $value;
-        }
-
-        // or find it in the new session data.
-        if (null !== ($value = $this->isIn($key, $session[':new:']))) {
-            return $value;
-        }
-
-        // or finally return the default value.
-        if (null !== ($value = $this->isIn($key, $session[':old:']))) {
-            return $value;
-        }
-
-        return $default;
+        return $this->isIn(
+            $key,
+            $session, // check first for the item in the general session data
+            $this->isIn( // or else look in the new session data
+                $key,
+                $session[':new:'],
+                $this->isIn( // or else look in the old session data
+                    $key,
+                    $session[':old:'],
+                    $default // or use the default value as a last resort
+                )
+            )
+        );
     }
 
     /**
@@ -162,13 +159,13 @@ class Payload
      *
      * @return mixed|null
      */
-    protected function isIn($key, array $session)
+    protected function isIn($key, array $session, $default = null)
     {
-        if (array_key_exists($key, $session) && $session[$key] !== null) {
+        if (isset($session[$key])) {
             return $session[$key];
         }
 
-        return null;
+        return $default;
     }
 
     /**

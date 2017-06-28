@@ -174,7 +174,7 @@ class Request
     {
         static $content;
 
-        if (false === $content || (true === $asResource && null !== $content)) {
+        if (false === $content || (true === $asResource && isset($content))) {
             throw new \LogicException('resource can only be returned once');
         }
 

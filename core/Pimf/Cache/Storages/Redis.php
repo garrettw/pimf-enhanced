@@ -45,7 +45,7 @@ class Redis extends Storage
      */
     public function has($key)
     {
-        return ($this->redis->get($key) !== null);
+        return (!is_null($this->redis->get($key)));
     }
 
     /**
