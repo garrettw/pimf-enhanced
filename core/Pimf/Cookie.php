@@ -57,7 +57,7 @@ class Cookie
      */
     public static function has($name)
     {
-        return (!is_null(static::get($name)));
+        return (is_string(static::get($name)));
     }
 
     /**
@@ -74,9 +74,9 @@ class Cookie
             return static::parse(static::$jar[$name]['value']);
         }
 
-        $cookie = Request::$cookieData;
+        $value = Request::$cookieData->get($name);
 
-        if (!is_null($value = $cookie->get($name))) {
+        if (isset($value)) {
             return static::parse($value);
         }
 

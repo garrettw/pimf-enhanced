@@ -69,7 +69,7 @@ class Uri
      */
     public static function current()
     {
-        if (!is_null(static::$uri)) {
+        if (is_string(static::$uri)) {
             return static::$uri;
         }
 

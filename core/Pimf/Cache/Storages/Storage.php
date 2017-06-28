@@ -23,7 +23,7 @@ abstract class Storage implements \ArrayAccess
      */
     public function has($key)
     {
-        return (is_null($this->get($key))) ? false : true;
+        return (!is_null($this->get($key)));
     }
 
     /**
@@ -139,7 +139,9 @@ abstract class Storage implements \ArrayAccess
      */
     public function remember($key, $default, $minutes, $function = 'put')
     {
-        if (!is_null($item = $this->get($key, null))) {
+        $item = $this->get($key, null);
+
+        if (isset($item)) {
             return $item;
         }
 

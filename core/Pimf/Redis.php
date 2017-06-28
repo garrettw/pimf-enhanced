@@ -160,7 +160,7 @@ class Redis
      */
     protected function connect()
     {
-        if (!is_null($this->connection)) {
+        if (is_resource($this->connection)) {
             return $this->connection;
         }
 
@@ -220,7 +220,7 @@ class Redis
      *
      * @param string $head
      *
-     * @return string
+     * @return string|null
      */
     protected function bulk($head)
     {

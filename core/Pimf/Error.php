@@ -135,7 +135,7 @@ class Error
     public static function shutdown(Logger $logger, $error, $exit = true)
     {
         // if a fatal error occurred
-        if (!is_null($error)) {
+        if (is_array($error)) {
             static::exception(new \ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']),
                 $logger, $exit);
         }

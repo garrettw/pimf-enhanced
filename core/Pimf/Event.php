@@ -162,7 +162,7 @@ class Event
 
                     // If the event is set to halt,
                     // return the first response that is not null.
-                    if ($halt && !is_null($response)) {
+                    if ($halt && isset($response)) {
                         return $response;
                     }
 
