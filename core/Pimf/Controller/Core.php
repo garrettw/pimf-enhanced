@@ -87,9 +87,9 @@ class Core extends Base
 
         if ($this->createTable($type, 'session')) {
             echo 'Session table successfully created.' . PHP_EOL;
-        } else {
-            echo 'Problems creating session table!' . PHP_EOL;
+            return;
         }
+        echo 'Problems creating session table!' . PHP_EOL;
     }
 
     public function createCacheTableCliAction()
@@ -99,9 +99,9 @@ class Core extends Base
 
         if ($this->createTable($type, 'cache')) {
             echo 'Cache table successfully created.' . PHP_EOL;
-        } else {
-            echo 'Problems creating cache table!' . PHP_EOL;
+            return;
         }
+        echo 'Problems creating cache table!' . PHP_EOL;
     }
 
     /**

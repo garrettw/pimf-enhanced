@@ -119,28 +119,28 @@ final class Uuid
             self::$pid = self::getLockId();
         }
 
-        list($time_mid, $time_lo) = explode(' ', microtime());
+        list($timeMid, $timeLo) = explode(' ', microtime());
 
-        $time_low = (int)$time_lo;
-        $time_mid = (int)substr($time_mid, 2);
+        $timeLow = (int)$timeLo;
+        $timeMid = (int)substr($timeMid, 2);
 
-        $time_and_version = mt_rand(0, 0xfff);
+        $timeAndVersion = mt_rand(0, 0xfff);
 
         // version 4 UUID
-        $time_and_version |= 0x4000;
+        $timeAndVersion |= 0x4000;
 
-        $clock_seq_low = mt_rand(0, 0xff);
+        $clockSeqLow = mt_rand(0, 0xff);
 
         // type is pseudo-random
-        $clock_seq_high = mt_rand(0, 0x3f);
-        $clock_seq_high |= 0x80;
+        $clockSeqHigh = mt_rand(0, 0x3f);
+        $clockSeqHigh |= 0x80;
 
-        $node_low = self::$pid;
+        $nodeLow = self::$pid;
         $node = self::$node;
 
         return sprintf(
-            '%08x-%04x-%04x-%02x%02x-%04x%08x', $time_low, $time_mid & 0xffff, $time_and_version, $clock_seq_high,
-            $clock_seq_low, $node_low,
+            '%08x-%04x-%04x-%02x%02x-%04x%08x', $timeLow, $timeMid & 0xffff, $timeAndVersion, $clockSeqHigh,
+            $clockSeqLow, $nodeLow,
             $node
         );
     }

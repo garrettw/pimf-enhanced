@@ -158,14 +158,14 @@ class Route
         $uri = Uri::full();
         $pos = strpos($uri, '?');
         $app = Config::get('app');
-        $app_url = empty($app['url']) ? "" : $app['url'];
-        $base_uri = parse_url($app_url);
-        $base_path = isset($base_uri['path']) ? $base_uri['path'] : "";
+        $appUrl = empty($app['url']) ? "" : $app['url'];
+        $baseUri = parse_url($appUrl);
+        $basePath = isset($baseUri['path']) ? $baseUri['path'] : "";
 
-        if (strlen($base_path) > 0) {
+        if (strlen($basePath) > 0) {
             // if $base_path exists
-            if (strpos($uri, $base_path) === 0) {
-                $uri = substr($uri, strlen($base_path));
+            if (strpos($uri, $basePath) === 0) {
+                $uri = substr($uri, strlen($basePath));
             } else {
                 throw \RuntimeException('request uri does not match site base url');
             }

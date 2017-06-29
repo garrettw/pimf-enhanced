@@ -192,12 +192,12 @@ class Redis
      */
     protected function command($method, $parameters)
     {
-        $CRLF = "\r\n";
+        $crlf = "\r\n";
 
-        $command = '*' . (count($parameters) + 1) . $CRLF . '$' . strlen($method) . $CRLF . strtoupper($method) . $CRLF;
+        $command = '*' . (count($parameters) + 1) . $crlf . '$' . strlen($method) . $crlf . strtoupper($method) . $crlf;
 
         foreach ($parameters as $parameter) {
-            $command .= '$' . strlen($parameter) . $CRLF . $parameter . $CRLF;
+            $command .= '$' . strlen($parameter) . $crlf . $parameter . $crlf;
         }
 
         return $command;

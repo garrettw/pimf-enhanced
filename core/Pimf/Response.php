@@ -196,15 +196,15 @@ class Response
     /**
      * Handles setting pages that are always to be revalidated for freshness by any cache.
      *
-     * @param int $last_modified Timestamp in seconds
+     * @param int $lastModified Timestamp in seconds
      *
      * @return $this
      */
-    public function exitIfNotModifiedSince($last_modified)
+    public function exitIfNotModifiedSince($lastModified)
     {
         self::preventMultipleCaching();
         self::$cached = true;
-        Header::exitIfNotModifiedSince($last_modified);
+        Header::exitIfNotModifiedSince($lastModified);
 
         return $this;
     }

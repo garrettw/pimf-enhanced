@@ -26,23 +26,23 @@ class Header extends Header\ResponseStatus
     /**
      * @var string
      */
-    private static $IfModifiedSince;
+    private static $ifModifiedSince;
 
     /**
      * @var string
      */
-    private static $IfNoneMatch;
+    private static $ifNoneMatch;
 
     /**
      * @param string $userAgent
      * @param string $IfModifiedSince
      * @param string $IfNoneMatch
      */
-    public static function edge($userAgent, $IfModifiedSince, $IfNoneMatch)
+    public static function edge($userAgent, $ifModifiedSince, $ifNoneMatch)
     {
         self::$userAgent = $userAgent;
-        self::$IfModifiedSince = $IfModifiedSince;
-        self::$IfNoneMatch = $IfNoneMatch;
+        self::$ifModifiedSince = $ifModifiedSince;
+        self::$ifNoneMatch = $ifNoneMatch;
     }
 
     /**
@@ -126,16 +126,16 @@ class Header extends Header\ResponseStatus
      *
      * @param int $last_modified Timestamp in seconds
      */
-    public static function exitIfNotModifiedSince($last_modified)
+    public static function exitIfNotModifiedSince($lastModified)
     {
-        if (self::isModified($last_modified)) {
+        if (self::isModified($lastModified)) {
             self::sendNotModified();
             exit(0);
         }
 
-        $last_modified = gmdate('D, d M Y H:i:s', $last_modified) . ' GMT';
+        $lastModified = gmdate('D, d M Y H:i:s', $lastModified) . ' GMT';
         header("Cache-Control: must-revalidate");
-        header("Last Modified: $last_modified");
+        header("Last Modified: $lastModified");
     }
 
     /**
@@ -148,9 +148,9 @@ class Header extends Header\ResponseStatus
      */
     public static function isModified($mtime, $etag = '')
     {
-        $modifiedSince = strtotime(preg_replace('/;.*$/', '', self::$IfModifiedSince));
+        $modifiedSince = strtotime(preg_replace('/;.*$/', '', self::$ifModifiedSince));
 
-        return !($modifiedSince >= $mtime || self::$IfNoneMatch === $etag);
+        return !($modifiedSince >= $mtime || self::$ifNoneMatch === $etag);
     }
 
     /**

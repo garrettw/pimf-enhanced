@@ -56,9 +56,9 @@ class Database extends \PDO
 
         if ($this->transLevel === 0 || $this->nestable() === false) {
             parent::commit();
-        } else {
-            $this->exec("RELEASE SAVEPOINT LEVEL{$this->transLevel}");
+            return;
         }
+        $this->exec("RELEASE SAVEPOINT LEVEL{$this->transLevel}");
     }
 
     /**
@@ -75,8 +75,8 @@ class Database extends \PDO
 
         if ($this->transLevel === 0 || $this->nestable() === false) {
             parent::rollBack();
-        } else {
-            $this->exec("ROLLBACK TO SAVEPOINT LEVEL{$this->transLevel}");
+            return;
         }
+        $this->exec("ROLLBACK TO SAVEPOINT LEVEL{$this->transLevel}");
     }
 }

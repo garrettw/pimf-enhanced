@@ -67,6 +67,8 @@ final class Application
             // this one is a mess
             $this->setupUtils($conf['bootstrap.local_temp_directory'], $conf->get('logging.storage', 'file'));
 
+            $this->logger->checkInit();
+
             // this needs to be done before much user app code is run
             $this->setupErrorHandling($conf['environment']);
 
@@ -102,8 +104,8 @@ final class Application
         }
 
         // $this->reportIf();
-        if (version_compare($version, 5.3) === -1) {
-            $problems[] = 'You have PHP ' . PHP_VERSION . ' and you need 5.3 or higher!';
+        if (version_compare(PHP_VERSION, 5.6) === -1) {
+            $problems[] = 'You have PHP ' . PHP_VERSION . ' and you need 5.6 or higher!';
         }
 
         if (!empty($problems)) {
@@ -169,30 +171,30 @@ final class Application
     {
         if ($environment === 'testing') {
             error_reporting(E_ALL | E_STRICT);
-        } else {
-
-            $logger = self::$logger;
-
-            set_exception_handler(
-                function ($exception) use ($logger) {
-                    Error::exception($exception, $logger);
-                }
-            );
-
-            set_error_handler(
-                function ($code, $error, $file, $line) use ($logger) {
-                    Error::native($code, $error, $file, $line, $logger, error_reporting());
-                }
-            );
-
-            register_shutdown_function(
-                function () use ($logger) {
-                    Error::shutdown($logger, error_get_last());
-                }
-            );
-
-            error_reporting(-1);
+            return;
         }
+
+        $logger = self::$logger;
+
+        set_exception_handler(
+            function ($exception) use ($logger) {
+                Error::exception($exception, $logger);
+            }
+        );
+
+        set_error_handler(
+            function ($code, $error, $file, $line) use ($logger) {
+                Error::native($code, $error, $file, $line, $logger, error_reporting());
+            }
+        );
+
+        register_shutdown_function(
+            function () use ($logger) {
+                Error::shutdown($logger, error_get_last());
+            }
+        );
+
+        error_reporting(-1);
     }
 
     /**
@@ -225,17 +227,15 @@ final class Application
                 new Adapter\File($tmpPath, "pimf-warnings.txt"),
                 new Adapter\File($tmpPath, "pimf-errors.txt")
             );
-        } else {
-            $this->logger = new Logger(
-                $remoteIp,
-                $script,
-                new Adapter\Std(Adapter\Std::OUT),
-                new Adapter\Std(Adapter\Std::OUT),
-                new Adapter\Std(Adapter\Std::ERR)
-            );
+            return;
         }
-
-        $this->logger->checkInit();
+        $this->logger = new Logger(
+            $remoteIp,
+            $script,
+            new Adapter\Std(Adapter\Std::OUT),
+            new Adapter\Std(Adapter\Std::OUT),
+            new Adapter\Std(Adapter\Std::ERR)
+        );
     }
 
     /**

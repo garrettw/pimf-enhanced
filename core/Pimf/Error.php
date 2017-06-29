@@ -44,10 +44,10 @@ class Error
         ) {
             Event::first('404', array($exception));
             Header::sendNotFound(null, $exit);
-        } else {
-            Event::first('500', array($exception));
-            Header::sendInternalServerError(null, $exit);
+            return;
         }
+        Event::first('500', array($exception));
+        Header::sendInternalServerError(null, $exit);
     }
 
     /**

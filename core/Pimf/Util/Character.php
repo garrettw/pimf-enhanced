@@ -259,10 +259,10 @@ class Character
     public static function matches($pattern, $value)
     {
         if ($pattern === '/') {
-            $pattern = '^/$';
-        } else {
-            $pattern = str_replace('*', '(.*)', $pattern) . '\z';
+            return ($pattern === $value);
         }
+
+        $pattern = str_replace('*', '(.*)', $pattern) . '\z';
 
         return (bool)preg_match('#' . $pattern . '#', $value);
     }
