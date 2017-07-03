@@ -42,11 +42,11 @@ class Error
         if ($exception instanceof \Pimf\Controller\Exception
             || $exception instanceof \Pimf\Resolver\Exception
         ) {
-            Event::first('404', array($exception));
+            Event::first('404', [$exception]);
             Header::sendNotFound(null, $exit);
             return;
         }
-        Event::first('500', array($exception));
+        Event::first('500', [$exception]);
         Header::sendInternalServerError(null, $exit);
     }
 

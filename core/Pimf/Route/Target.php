@@ -38,7 +38,7 @@ class Target
      *
      * @var array
      */
-    protected $params = array();
+    protected $params = [];
 
     /**
      * @param string $controller

@@ -276,7 +276,20 @@ class Character
      */
     public static function isEvilPath($path)
     {
-        return self::contains($path,
-            array('../', "..\\", '/..', '\..', ' ', '%2e%2e%2f', '%2e%2e%5C', '%2F%2e%2e', '%5C%2e%2e', '%20'));
+        return self::contains(
+            $path,
+            [
+                '../',
+                "..\\",
+                '/..',
+                '\..',
+                ' ',
+                '%2e%2e%2f',
+                '%2e%2e%5C',
+                '%2F%2e%2e',
+                '%5C%2e%2e',
+                '%20',
+            ]
+        );
     }
 }

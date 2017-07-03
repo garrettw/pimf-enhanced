@@ -64,7 +64,7 @@ class Redis
      *
      * @var array
      */
-    protected static $databases = array();
+    protected static $databases = [];
 
     /**
      * Create a new Redis connection instance.
@@ -228,17 +228,15 @@ class Redis
             return null;
         }
 
-        list($read, $response, $size) = array(0, '', substr($head, 1));
+        $read = 0;
+        $response = '';
+        $size = substr($head, 1);
 
-        if ($size > 0) {
-            do {
-
-                // Calculate and read the appropriate bytes off of the Redis response.
-                $block = (($remaining = $size - $read) < 1024) ? $remaining : 1024;
-                $response .= fread($this->connection, $block);
-                $read += $block;
-
-            } while ($read < $size);
+        while ($read < $size) {
+            // Calculate and read the appropriate bytes off of the Redis response.
+            $block = min($size - $read, 1024);
+            $response .= fread($this->connection, $block);
+            $read += $block;
         }
 
         // The response ends with a trailing CRLF.
@@ -262,7 +260,7 @@ class Redis
             return null;
         }
 
-        $response = array();
+        $response = [];
 
         // Iterate through each bulk response in the multi-bulk and parse it out.
         for ($i = 0; $i < $count; $i++) {

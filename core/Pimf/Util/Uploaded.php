@@ -202,13 +202,13 @@ class Uploaded extends File
     {
         $max = trim(ini_get('upload_max_filesize'));
 
-        if ('' === $max) {
+        if ($max === '') {
             return PHP_INT_MAX;
         }
 
         $unit = strtolower(substr($max, -1));
 
-        if (in_array($unit, array('g', 'm', 'k'), true)) {
+        if (in_array($unit, ['g', 'm', 'k'], true)) {
             $max *= 1024;
         }
 

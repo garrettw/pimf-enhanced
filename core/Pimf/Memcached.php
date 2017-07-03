@@ -104,6 +104,6 @@ class Memcached
      */
     public static function __callStatic($method, $parameters)
     {
-        return call_user_func_array(array(static::connection(), $method), $parameters);
+        return call_user_func_array([static::connection(), $method], $parameters);
     }
 }

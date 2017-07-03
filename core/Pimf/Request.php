@@ -48,9 +48,9 @@ class Request
     /**
      * The request HTTP method send by the client-browser.
      *
-     * @var null|string
+     * @var string
      */
-    protected $method = null;
+    protected $method;
 
     /**
      * @param array             $getData
@@ -61,12 +61,12 @@ class Request
      * @param \Pimf\Environment $env
      */
     public function __construct(
+        Environment $env,
         array $getData,
-        array $postData = array(),
-        array $cookieData = array(),
-        array $cliData = array(),
-        array $filesData = array(),
-        \Pimf\Environment $env
+        array $postData = [],
+        array $cookieData = [],
+        array $cliData = [],
+        array $filesData = []
     ) {
 
         static::$getData = new Param($getData);
@@ -89,14 +89,14 @@ class Request
     public function streamInput($asResource = false)
     {
         if (0 === strpos($this->env->getRequestHeader('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
-            && in_array($this->env->data()->get('REQUEST_METHOD', 'GET'), array('PUT', 'DELETE', 'PATCH'))
+            && in_array($this->env->data()->get('REQUEST_METHOD', 'GET'), ['PUT', 'DELETE', 'PATCH'])
         ) {
 
             if ($asResource === true) {
                 return $this->getContent($asResource);
             }
 
-            $body = array();
+            $body = [];
             parse_str($this->getContent(), $body);
 
             return new Param($body);

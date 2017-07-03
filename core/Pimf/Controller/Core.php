@@ -22,7 +22,7 @@ class Core extends Base
      */
     public function indexAction()
     {
-
+        return;
     }
 
     /**
@@ -34,12 +34,12 @@ class Core extends Base
 
         $app = 'app/' . Config::get('app.name') . '/';
 
-        $assets = array(
+        $assets = [
             BASE_PATH . $app . '_session/',
             BASE_PATH . $app . '_cache/',
             BASE_PATH . $app . '_database/',
             BASE_PATH . $app . '_templates/',
-        );
+        ];
 
         echo 'Checking app assets ...' . PHP_EOL;
 
@@ -80,6 +80,9 @@ class Core extends Base
         clearstatcache();
     }
 
+    /**
+     * Creates database table for session data.
+     */
     public function createSessionTableCliAction()
     {
         $std = new Std();
@@ -92,6 +95,9 @@ class Core extends Base
         echo 'Problems creating session table!' . PHP_EOL;
     }
 
+    /**
+     * Creates database table for cache data.
+     */
     public function createCacheTableCliAction()
     {
         $std = new Std();

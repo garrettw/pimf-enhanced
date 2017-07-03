@@ -45,14 +45,14 @@ class Resolver
     protected $router;
 
     /**
-     * @param Request      $request
-     * @param string       $repositoryPath
-     * @param string       $prefix
-     * @param \Pimf\Router $router
+     * @param Request $request
+     * @param Router  $router
+     * @param string  $repositoryPath
+     * @param string  $prefix
      *
      * @throws \Pimf\Resolver\Exception If no controller found at the repository path
      */
-    public function __construct(\Pimf\Request $request, $repositoryPath = '/Controller', $prefix = 'Pimf\\', $router)
+    public function __construct(Request $request, Router $router, $repositoryPath = '/Controller', $prefix = 'Pimf\\')
     {
         $controllerName = $request->fromGet()->get('controller');
         $this->router = $router;

@@ -24,8 +24,11 @@ class Router
     /**
      * @var Route[]
      */
-    protected $routes = array();
+    protected $routes = [];
 
+    /**
+     * Just the constructor.
+     */
     public function __construct()
     {
         //it is a pimf-framework restriction.

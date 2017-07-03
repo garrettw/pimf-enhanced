@@ -56,17 +56,17 @@ class Twig extends View implements Reunitable
 
         require_once BASE_PATH . "Twig/vendor/autoload.php";
 
-        $options = array(
+        $options = [
             'debug'       => $conf['debug'],
             'auto_reload' => $conf['auto_reload']
-        );
+        ];
 
         if ($conf['cache'] === true) {
             $options['cache'] = $this->path . '/twig_cache';
         }
 
         // define the Twig environment.
-        $this->twig = new \Twig_Environment(new \Twig_Loader_Filesystem(array($this->path)), $options);
+        $this->twig = new \Twig_Environment(new \Twig_Loader_Filesystem([$this->path]), $options);
     }
 
     /**

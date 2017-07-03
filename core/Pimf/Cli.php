@@ -78,14 +78,14 @@ final class Cli
      */
     public static function collect($appClr = null, $coreClr = null, $root = null)
     {
-        $classes = array();
+        $classes = [];
 
         if ($root === null && $coreClr === null && $appClr === null) {
             $coreClr = str_replace('/', DS, BASE_PATH . '/pimf-framework/core/Pimf/Controller/');
             $appClr = str_replace('/', DS, BASE_PATH . '/app/' . Config::get('app.name') . '/Controller/');
         }
 
-        foreach (array($appClr, $coreClr) as $dir) {
+        foreach ([$appClr, $coreClr] as $dir) {
 
             $iterator
                 = new \RegexIterator(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir)),
@@ -96,7 +96,12 @@ final class Cli
                 $file = str_replace("\\", '/', current($file));
                 $file = str_replace('/', DS, $file);
                 $name = str_replace(
-                    array(BASE_PATH . DS . 'pimf-framework' . DS . 'core' . DS, BASE_PATH . DS . 'app' . DS), '', $file
+                    [
+                        BASE_PATH . DS . 'pimf-framework' . DS . 'core' . DS,
+                        BASE_PATH . DS . 'app' . DS,
+                    ],
+                    '',
+                    $file
                 );
 
                 $name = str_replace(DS, '\\', $name);
@@ -115,11 +120,11 @@ final class Cli
      */
     public static function parse(array $commands)
     {
-        $cli = array();
+        $cli = [];
 
         parse_str(implode('&', array_slice($commands, 1)), $cli);
 
-        $command = current(array_keys((array)$cli, ''));
+        $command = current(array_keys($cli, ''));
 
         if (Str::contains($command, ':')) {
 

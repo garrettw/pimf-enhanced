@@ -40,7 +40,9 @@ class File extends Storage implements Cleanable
      */
     public function load($key)
     {
-        if (file_exists($path = $this->path . $key)) {
+        $path = $this->path . $key;
+
+        if (file_exists($path)) {
             return unserialize(file_get_contents($path));
         }
         return null;

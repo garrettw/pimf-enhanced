@@ -44,7 +44,7 @@ abstract class AsArray implements Arrayable
      */
     protected function map(array $properties)
     {
-        $map = array();
+        $map = [];
 
         foreach ($properties as $name => $default) {
             $map[$name] = (true === empty($this->$name)) ? $default : $this->$name;

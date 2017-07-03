@@ -37,6 +37,9 @@ class Std
         return substr(fgets($this->handle, 1024), 0, -1);
     }
 
+    /**
+     * Ensures clean shutdown.
+     */
     public function __destruct()
     {
         fclose($this->handle);

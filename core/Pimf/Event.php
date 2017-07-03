@@ -55,7 +55,7 @@ class Event
      *
      * @var array
      */
-    protected static $events = array();
+    protected static $events = [];
 
     /**
      * Determine if an event has any registered listeners.
@@ -148,7 +148,7 @@ class Event
      */
     public static function fire($events, $parameters = array(), $halt = false)
     {
-        $responses = array();
+        $responses = [];
         $parameters = (array)$parameters;
 
         // If the event has listeners, iterate through them and call each listener,

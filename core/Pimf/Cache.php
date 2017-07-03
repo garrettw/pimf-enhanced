@@ -37,7 +37,7 @@ class Cache
      *
      * @var \Pimf\Cache\Storages\Storage[]
      */
-    public static $storages = array();
+    public static $storages = [];
 
     /**
      * Get a cache storage instance.
@@ -112,7 +112,8 @@ class Cache
     public static function __callStatic($method, $parameters)
     {
         return call_user_func_array(
-            array(static::storage(Config::get('cache.storage')), $method), $parameters
+            [static::storage(Config::get('cache.storage')), $method],
+            $parameters
         );
     }
 }

@@ -29,7 +29,8 @@ class Database extends \PDO
     public function nestable()
     {
         return in_array(
-            $this->getAttribute(\PDO::ATTR_DRIVER_NAME), array("pgsql", "mysql")
+            $this->getAttribute(\PDO::ATTR_DRIVER_NAME),
+            ["pgsql", "mysql"]
         );
     }
 

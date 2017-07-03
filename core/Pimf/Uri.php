@@ -40,7 +40,7 @@ class Uri
      *
      * @var array
      */
-    public static $segments = array();
+    public static $segments = [];
 
     /**
      * @param string $pathInfo
@@ -78,7 +78,7 @@ class Uri
 
         //Set the URI segments for the request.
         $segments = explode('/', trim($uri, '/'));
-        static::$segments = array_diff($segments, array(''));
+        static::$segments = array_diff($segments, ['']);
 
         return static::$uri = $uri;
     }

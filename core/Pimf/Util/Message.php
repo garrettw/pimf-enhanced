@@ -44,7 +44,7 @@ class Message
     /**
      * @var array A list of tokes which should be bind.
      */
-    protected $bindings = array();
+    protected $bindings = [];
 
     /**
      * @var string The prefixed delimiter for the tokens.
@@ -55,7 +55,7 @@ class Message
      * @param string $message  The message or the resource.
      * @param array  $bindings (Optional) A List of tokes whitch should be bind.
      */
-    public function __construct($message, array $bindings = array())
+    public function __construct($message, array $bindings = [])
     {
         $this->setMessage($message);
         $this->bindings = $bindings;

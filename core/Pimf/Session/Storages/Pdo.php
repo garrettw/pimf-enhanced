@@ -50,11 +50,11 @@ class Pdo extends Storage implements Cleanable
             $session = $sth->fetchObject();
 
             if ($session instanceof \stdClass) {
-                return array(
+                return [
                     'id'            => $session->id,
                     'last_activity' => $session->last_activity,
                     'data'          => unserialize($session->data)
-                );
+                ];
             }
             return null;
         } catch (\PDOException $pdoe) {

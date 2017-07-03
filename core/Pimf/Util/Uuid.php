@@ -29,21 +29,37 @@ final class Uuid
      *
      * @var integer
      */
-    private static $node = null;
+    private $node;
 
     /**
      * Process identifier.
      *
      * @var integer
      */
-    private static $pid = null;
+    private $pid;
 
-    private static $hostIp, $hostName;
+    /**
+     * IP address of this host.
+     *
+     * @var string
+     */
+    private $hostIp;
 
-    public static function setup($hostIp, $hostName)
+    /**
+     * Hostname of this host.
+     *
+     * @var string
+     */
+    private $hostName;
+
+    /**
+     * @param string|null $hostIp
+     * @param string|null $hostName
+     */
+    public function __construct($hostIp = null, $hostName = null)
     {
-        self::$hostIp = $hostIp;
-        self::$hostName = $hostName;
+        $this->hostIp = $hostIp;
+        $this->hostName = $hostName;
     }
 
     /**
@@ -55,29 +71,29 @@ final class Uuid
      *
      * @return integer
      */
-    private static function getNodeId()
+    private function getNodeId()
     {
-        if (is_string(self::$hostIp)) {
-            return ip2long(self::$hostIp);
+        if (is_string($this->hostIp)) {
+            return ip2long($this->hostIp);
         }
 
-        self::$hostIp = '127.0.0.1';
+        $this->hostIp = '127.0.0.1';
 
-        if (is_string(self::$hostName)) {
-            self::$hostIp = crc32(self::$hostName);
+        if (is_string($this->hostName)) {
+            $this->hostIp = crc32($this->hostName);
         }
 
         if (true === function_exists('php_uname')) {
-            self::$hostName = php_uname('n');
-            self::$hostIp = gethostbyname(self::$hostName);
+            $this->hostName = php_uname('n');
+            $this->hostIp = gethostbyname($this->hostName);
         }
 
         if (true === function_exists('gethostname')) {
-            self::$hostName = gethostname();
-            self::$hostIp = gethostbyname(self::$hostName);
+            $this->hostName = gethostname();
+            $this->hostIp = gethostbyname($this->hostName);
         }
 
-        return ip2long(self::$hostIp);
+        return ip2long($this->hostIp);
     }
 
     /**
@@ -109,14 +125,14 @@ final class Uuid
      *
      * @return string
      */
-    public static function generate()
+    public function generate()
     {
-        if (self::$node === null) {
-            self::$node = self::getNodeId();
+        if ($this->node === null) {
+            $this->node = $this->getNodeId();
         }
 
-        if (self::$pid === null) {
-            self::$pid = self::getLockId();
+        if ($this->pid === null) {
+            $this->pid = self::getLockId();
         }
 
         list($timeMid, $timeLo) = explode(' ', microtime());
@@ -135,8 +151,8 @@ final class Uuid
         $clockSeqHigh = mt_rand(0, 0x3f);
         $clockSeqHigh |= 0x80;
 
-        $nodeLow = self::$pid;
-        $node = self::$node;
+        $nodeLow = $this->pid;
+        $node = $this->node;
 
         return sprintf(
             '%08x-%04x-%04x-%02x%02x-%04x%08x', $timeLow, $timeMid & 0xffff, $timeAndVersion, $clockSeqHigh,

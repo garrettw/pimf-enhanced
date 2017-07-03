@@ -26,7 +26,7 @@ class Dom extends \DOMDocument
      */
     public function fetchValues($tag, $attribute)
     {
-        $values = array();
+        $values = [];
 
         // loop through each tag in the dom and add it to the array
         foreach ($this->getElementsByTagName($tag) as $element) {

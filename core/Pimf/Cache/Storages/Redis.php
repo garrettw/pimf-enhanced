@@ -57,7 +57,9 @@ class Redis extends Storage
      */
     protected function retrieve($key)
     {
-        if (!is_null($cache = $this->redis->get($key))) {
+        $cache = $this->redis->get($key);
+
+        if (!is_null($cache)) {
             return unserialize($cache);
         }
         return null;

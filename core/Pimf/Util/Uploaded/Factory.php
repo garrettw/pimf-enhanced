@@ -31,7 +31,7 @@ abstract class Factory
     /**
      * @var array
      */
-    protected static $fileKeys = array('error', 'name', 'size', 'tmp_name', 'type');
+    protected static $fileKeys = ['error', 'name', 'size', 'tmp_name', 'type'];
 
     /**
      * Factory for save instance creation.
@@ -103,13 +103,13 @@ abstract class Factory
 
         foreach (array_keys($data['name']) as $key) {
             $files[$key] = static::heal(
-                array(
+                [
                     'error'    => $data['error'][$key],
                     'name'     => $data['name'][$key],
                     'type'     => $data['type'][$key],
                     'tmp_name' => $data['tmp_name'][$key],
                     'size'     => $data['size'][$key]
-                )
+                ]
             );
         }
 

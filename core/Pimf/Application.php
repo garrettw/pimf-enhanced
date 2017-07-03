@@ -23,6 +23,9 @@ use Pimf\Util\Uuid;
  */
 final class Application
 {
+    /**
+     * The official framework version identifier
+     */
     const VERSION = '1.10.0';
 
     /**
@@ -127,9 +130,9 @@ final class Application
      */
     public function run(array $get, array $post, array $cookie, array $files)
     {
-        $cli = array();
+        $cli = [];
         if (Sapi::isCli()) {
-            $cli = Cli::parse((array)self::$env->argv);
+            $cli = Cli::parse((array)$this->env->argv);
             if (count($cli) < 1 || isset($cli['list'])) {
                 Cli::absorb();
                 return;
@@ -144,15 +147,15 @@ final class Application
             $repository = BASE_PATH . 'pimf-framework/core/Pimf/Controller';
         }
 
-        $request = new Request($get, $post, $cookie, $cli, $files, self::$env);
-        $resolver = new Resolver($request, $repository, $prefix, self::$router);
+        $request = new Request($this->env, $get, $post, $cookie, $cli, $files);
+        $resolver = new Resolver($request, $this->router, $repository, $prefix);
         $sessionized = (Sapi::isWeb() && !empty(Config::get('session.storage')));
 
         if ($sessionized === true) {
             Session::load();
         }
 
-        $pimf = $resolver->process(self::$env, self::$em, self::$logger);
+        $pimf = $resolver->process($this->env, $this->em, $this->logger);
 
         if ($sessionized === true) {
             Session::save();
@@ -174,7 +177,7 @@ final class Application
             return;
         }
 
-        $logger = self::$logger;
+        $logger = $this->logger;
 
         set_exception_handler(
             function ($exception) use ($logger) {
@@ -209,12 +212,12 @@ final class Application
         ResponseStatus::setup($envData->get('SERVER_PROTOCOL', 'HTTP/1.0'));
 
         Header::setup(
-            self::$env->getUserAgent()
+            $this->env->getUserAgent()
         );
 
-        Url::setup(self::$env->getUrl(), self::$env->isHttps());
-        Uri::setup(self::$env->PATH_INFO, self::$env->REQUEST_URI);
-        Uuid::setup(self::$env->getIp(), self::$env->getHost());
+        Url::setup($this->env->getUrl(), $this->env->isHttps());
+        Uri::setup($this->env->PATH_INFO, $this->env->REQUEST_URI);
+        $uuid = new Uuid($this->env->getIp(), $this->env->getHost());
 
         $remoteIp = $this->env->getIp();
         $script = $envData->get('PHP_SELF', $envData->get('SCRIPT_NAME'));
@@ -243,5 +246,6 @@ final class Application
      */
     private function __clone()
     {
+        throw new \LogicException('PIMF Application can not be cloned;');
     }
 }

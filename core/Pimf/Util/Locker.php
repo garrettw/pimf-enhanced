@@ -56,19 +56,26 @@ class Locker
         $errorLevel = error_reporting(0);
         set_error_handler('var_dump', 0);
 
-        if (!$this->handle = fopen($this->file, 'r')) {
-            if ($this->handle = fopen($this->file, 'x')) {
+        $this->handle = fopen($this->file, 'r');
+
+        if ($this->handle === false) {
+            $this->handle = fopen($this->file, 'x');
+
+            if (is_resource($this->handle)) {
                 chmod($this->file, 0444);
-            } elseif (!$this->handle = fopen($this->file, 'r')) {
-                usleep(100);
+            } else {
                 $this->handle = fopen($this->file, 'r');
+                if ($this->handle === false) {
+                    usleep(100);
+                    $this->handle = fopen($this->file, 'r');
+                }
             }
         }
 
         restore_error_handler();
         error_reporting($errorLevel);
 
-        if (!$this->handle) {
+        if ($this->handle === false) {
             $error = error_get_last();
             throw new \RuntimeException($error['message'], 0, null, $this->file);
         }
@@ -88,10 +95,11 @@ class Locker
      */
     public function release()
     {
-        if ($this->handle) {
-            flock($this->handle, LOCK_UN | LOCK_NB);
-            fclose($this->handle);
-            $this->handle = null;
+        if ($this->handle === false) {
+            return;
         }
+        flock($this->handle, LOCK_UN | LOCK_NB);
+        fclose($this->handle);
+        $this->handle = null;
     }
 }

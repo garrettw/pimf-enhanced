@@ -46,7 +46,7 @@ class Cookie
      *
      * @var array
      */
-    public static $jar = array();
+    public static $jar = [];
 
     /**
      * Determine if a cookie exists.
@@ -169,7 +169,7 @@ class Cookie
         $segments = explode('+', $value);
 
         // check if the cookie is invalid.
-        if (!(count($segments) >= 2)) {
+        if (count($segments) < 2) {
             return null;
         }
 

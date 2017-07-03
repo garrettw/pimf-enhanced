@@ -19,6 +19,9 @@ namespace Pimf\Controller;
  */
 class Rest extends Base
 {
+    /**
+     * Send some basic headers
+     */
     public function init()
     {
         // allow cross-origin resource sharing

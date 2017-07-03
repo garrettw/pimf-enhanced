@@ -23,7 +23,7 @@ class Sanitize
      */
     public static function removeNullCharacters($string)
     {
-        return preg_replace(array('/\0+/', '/(\\\\0)+/'), '', $string);
+        return preg_replace(['/\0+/', '/(\\\\0)+/'], '', $string);
     }
 
     /**
@@ -53,7 +53,7 @@ class Sanitize
      */
     public static function strangeThingsAreSubmitted($string)
     {
-        return preg_replace(array("/%u0([a-z0-9]{3})/i", "/%([a-z0-9]{2})/i"), "&#x\\1;", $string);
+        return preg_replace(["/%u0([a-z0-9]{3})/i", "/%([a-z0-9]{2})/i"], "&#x\\1;", $string);
     }
 
     /**
@@ -64,7 +64,7 @@ class Sanitize
      */
     public static function convertCharacterEntitiesToASCII($string, $charset)
     {
-        $matches = array();
+        $matches = [];
 
         if (preg_match_all("/<(.+?)>/si", $string, $matches)) {
 
@@ -100,8 +100,8 @@ class Sanitize
     public static function makesPhpTagsSafe($string)
     {
         return str_replace(
-            array('<?php', '<?PHP', '<?', '?>'),
-            array('&lt;?php', '&lt;?PHP', '&lt;?', '?&gt;'),
+            ['<?php', '<?PHP', '<?', '?>'],
+            ['&lt;?php', '&lt;?PHP', '&lt;?', '?&gt;'],
             $string
         );
     }
@@ -113,7 +113,7 @@ class Sanitize
      */
     public static function compactAnyExplodedWords($string)
     {
-        $words = array('javascript', 'vbscript', 'script', 'applet', 'alert', 'document', 'write', 'cookie', 'window');
+        $words = ['javascript', 'vbscript', 'script', 'applet', 'alert', 'document', 'write', 'cookie', 'window'];
         foreach ($words as $word) {
             $temp = '';
             $len = strlen($word);
@@ -202,15 +202,15 @@ class Sanitize
      */
     public static function removeJavaScriptHardRedirects($string)
     {
-        $bad = array(
+        $bad = [
             'document.cookie' => '',
             'document.write'  => '',
             'window.location' => '',
             "javascript\s*:"  => '',
             "Redirect\s+302"  => '',
             '<!--'            => '&lt;!--',
-            '-->'             => '--&gt;'
-        );
+            '-->'             => '--&gt;',
+        ];
         foreach ($bad as $key => $val) {
             $string = preg_replace("#" . $key . "#i", $val, $string);
         }

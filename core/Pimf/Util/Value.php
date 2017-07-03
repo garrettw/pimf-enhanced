@@ -29,6 +29,9 @@ class Value
         $this->value = '' . $string;
     }
 
+    /**
+     * Returns the raw string stored in the object.
+     */
     public function __toString()
     {
         return $this->value;

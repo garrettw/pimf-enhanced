@@ -28,6 +28,9 @@ class IdentityMap
      */
     protected $objectToId;
 
+    /**
+     * Initializes object storage.
+     */
     public function __construct()
     {
         $this->objectToId = new \SplObjectStorage();

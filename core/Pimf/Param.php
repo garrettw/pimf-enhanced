@@ -15,9 +15,9 @@ namespace Pimf;
 class Param implements \ArrayAccess
 {
     /**
-     * @var \ArrayObject|null
+     * @var \ArrayObject
      */
-    protected $data = null;
+    protected $data;
 
     /**
      * @param array $data

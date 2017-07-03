@@ -62,9 +62,9 @@ abstract class Base
      */
     public function __construct(
         Request $request,
-        Response $response = null,
+        Response $response,
         Logger $logger,
-        $em,
+        EntityManager $em,
         Router $router,
         Environment $env
     ) {
@@ -76,6 +76,9 @@ abstract class Base
         $this->env = $env;
     }
 
+    /**
+     * Default action for web SAPI.
+     */
     abstract public function indexAction();
 
     /**
@@ -129,7 +132,7 @@ abstract class Base
             throw new Bomb("no action '{$action}' defined at controller " . get_class($this));
         }
 
-        return call_user_func(array($this, $action));
+        return call_user_func([$this, $action]);
     }
 
     /**

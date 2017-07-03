@@ -57,9 +57,9 @@ abstract class Factory
 
                 $items = explode('[', str_replace(']', '', $check));
                 $method = $items[0];
-                $parameters = array_merge(array($key), (isset($items[1]) ? explode(',', $items[1]) : array()));
+                $parameters = array_merge([$key], (isset($items[1]) ? explode(',', $items[1]) : []));
 
-                call_user_func_array(array($validator, $method), $parameters);
+                call_user_func_array([$validator, $method], $parameters);
             }
         }
 

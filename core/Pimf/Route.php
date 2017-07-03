@@ -38,7 +38,7 @@ class Route
     /**
      * @var array
      */
-    private $params = array();
+    private $params = [];
 
     /**
      * The route pattern (e.g. "/controller/:action/:id")
@@ -59,14 +59,14 @@ class Route
      *
      * @var array
      */
-    protected $names = array();
+    protected $names = [];
 
     /**
      * Array of URL parameter names with + at the end
      *
      * @var array
      */
-    protected $namesPath = array();
+    protected $namesPath = [];
 
     /**
      * Conditions for this route's URL parameters
@@ -80,7 +80,7 @@ class Route
      * @param array  $target
      * @param array  $conditions
      */
-    public function __construct($rule, array $target = array(), array $conditions = array())
+    public function __construct($rule, array $target = [], array $conditions = [])
     {
         $this->rule = $rule;
         $this->conditions = $conditions;
@@ -94,7 +94,7 @@ class Route
     {
         //convert URL params into regex patterns, construct a regex for this route, load params
         $regex = preg_replace_callback(
-            '#:([\w]+)\+?#', array($this, 'computeUrlRegex'), str_replace(')', ')?', (string)$this->rule)
+            '#:([\w]+)\+?#', [$this, 'computeUrlRegex'], str_replace(')', ')?', (string)$this->rule)
         );
 
         if (substr($this->rule, -1) === '/') {
@@ -102,8 +102,8 @@ class Route
         }
 
         //cache URL params names and values if this route matches the current HTTP request
-        $params = array();
-        if (!preg_match('#^' . $regex . '$#', self::computeUri(), $params)) {
+        $params = [];
+        if (!preg_match('#^' . $regex . '$#', $this->computeUri(), $params)) {
             $this->matched = false;
 
             return $this;
@@ -113,9 +113,9 @@ class Route
             if (isset($params[$name])) {
                 if (isset($this->namesPath[$name])) {
                     $this->params[$name] = explode('/', urldecode($params[$name]));
-                } else {
-                    $this->params[$name] = urldecode($params[$name]);
+                    continue;
                 }
+                $this->params[$name] = urldecode($params[$name]);
             }
         }
 

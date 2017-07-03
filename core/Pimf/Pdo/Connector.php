@@ -21,12 +21,12 @@ abstract class Connector
      *
      * @var array
      */
-    protected $options = array(
+    protected $options = [
         \PDO::ATTR_ERRMODE           => \PDO::ERRMODE_EXCEPTION,
         \PDO::ATTR_ORACLE_NULLS      => \PDO::NULL_NATURAL,
         \PDO::ATTR_STRINGIFY_FETCHES => false,
         \PDO::ATTR_EMULATE_PREPARES  => false,
-    );
+    ];
 
     /**
      * Establish a PDO database connection.
@@ -47,8 +47,8 @@ abstract class Connector
      */
     protected function options($config)
     {
-        $options = (isset($config['options'])) ? $config['options'] : array();
+        $options = (isset($config['options'])) ? (array)$config['options'] : [];
 
-        return $this->options + (array)$options;
+        return $this->options + $options;
     }
 }

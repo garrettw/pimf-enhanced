@@ -31,7 +31,7 @@ class Factory
 
         $driver = strtolower($config['driver']);
 
-        if (!in_array($driver, array('sqlite', 'mysql', 'sqlserver', 'postgre'), true)) {
+        if (!in_array($driver, ['sqlite', 'mysql', 'sqlserver', 'postgre'], true)) {
             throw new \UnexpectedValueException('PDO driver "' . $driver . '" not supported by PIMF');
         }
 

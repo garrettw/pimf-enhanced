@@ -51,7 +51,7 @@ class File implements Streamable
     public function open()
     {
         if (!is_dir($this->storageDir)) {
-            mkdir($this->storageDir, 0777);
+            mkdir($this->storageDir);
         }
 
         $this->storageDir = rtrim(realpath($this->storageDir), '\\/') . DS;

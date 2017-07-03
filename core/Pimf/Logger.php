@@ -150,6 +150,9 @@ class Logger
         }
     }
 
+    /**
+     * Ensures clean shutdown of logger.
+     */
     public function __destruct()
     {
         if (!is_resource($this->infoHandle)
@@ -177,15 +180,15 @@ class Logger
      */
     private function format($message, $severity)
     {
-        $fileName = self::$script;
+        $fileName = $this->script;
         $lastSlashIndex = strrpos($fileName, "/");
 
         if (is_int($lastSlashIndex)) {
             $fileName = substr($fileName, $lastSlashIndex + 1);
         }
 
-        $msg = date("m-d-Y") . " " . date("G:i:s") . " " . self::$remoteIp
-            . str_repeat(" ", 15 - strlen(self::$remoteIp))
+        $msg = date("m-d-Y") . " " . date("G:i:s") . " " . $this->remoteIp
+            . str_repeat(" ", 15 - strlen($this->remoteIp))
             . " " . $severity . ": "
             . $fileName . "\t: " . $message . "\r\n"
         ;

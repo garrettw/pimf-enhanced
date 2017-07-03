@@ -19,7 +19,7 @@ class Memory extends Storage
      *
      * @var array
      */
-    public $storage = array();
+    public $storage = [];
 
     /**
      * Retrieve an item from the cache storage.
@@ -80,6 +80,6 @@ class Memory extends Storage
      */
     public function flush()
     {
-        $this->storage = array();
+        $this->storage = [];
     }
 }

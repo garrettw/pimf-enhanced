@@ -252,7 +252,7 @@ class Validator
      */
     protected function addError($field, $error)
     {
-        $this->errors = array_merge_recursive($this->errors, array($field => $error));
+        $this->errors = array_merge_recursive($this->errors, [$field => $error]);
 
         return false;
     }
@@ -282,7 +282,7 @@ class Validator
      */
     protected function middleware($fieldName, $comparing, $operator, $expecting)
     {
-        if (in_array($operator, array("<", ">", "===", "<=", ">="), true)) {
+        if (in_array($operator, ["<", ">", "===", "<=", ">="], true)) {
             $func = function($a, $b) use ($operator) {
                 switch ($operator){
                     case "<":
@@ -304,6 +304,16 @@ class Validator
         return false;
     }
 
+    /**
+     * Just avoids duplicate code in lengthBetween() and valueBetween()
+     *
+     * @param string $fieldValue
+     * @param int $min
+     * @param int $max
+     * @param bool $inclusive
+     *
+     * @return bool
+     */
     protected static function between($fieldValue, $min, $max, $inclusive = false)
     {
         if ($inclusive === true) {

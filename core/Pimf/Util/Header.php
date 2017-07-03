@@ -179,6 +179,11 @@ class Header extends Header\ResponseStatus
         header("Cache-Control: private,max-age=$seconds,s-maxage=0");
     }
 
+    /**
+     * Just avoids duplicate code in cacheNoValidate() and cacheBrowser()
+     *
+     * @param int $seconds Interval in seconds
+     */
     private static function cachePage($seconds)
     {
         $now = time();

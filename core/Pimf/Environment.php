@@ -223,7 +223,7 @@ class Environment
      */
     public function getRequestHeaders()
     {
-        $headers = array();
+        $headers = [];
 
         foreach ($this->data->getAll() as $key => $value) {
             if ('HTTP_' === substr($key, 0, 5)) {

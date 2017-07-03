@@ -29,12 +29,12 @@ class Identifier
     /**
      * @var string
      */
-    protected static $delimiter = '_';
+    protected $delimiter = '_';
 
     /**
      * @var array
      */
-    protected $args = array();
+    protected $args = [];
 
     /**
      * Create a new Cache Identifier based on the given parameters.
@@ -42,11 +42,9 @@ class Identifier
      *
      * @throws \BadMethodCallException If no identifiers received.
      */
-    public function __construct()
+    public function __construct(...$args)
     {
-        $args = func_get_args();
-
-        if (!count($args) || !implode('', $args)) {
+        if (count($args) === 0 || empty(implode('', $args))) {
             throw new \BadMethodCallException('No identifiers received');
         }
 
@@ -78,8 +76,8 @@ class Identifier
      */
     protected function slag()
     {
-        $ident = str_replace('-', '_', implode(self::getDelimiter(), $this->args));
-        $ident = str_replace('_', self::getDelimiter(), $ident);
+        $ident = str_replace('-', '_', implode($this->getDelimiter(), $this->args));
+        $ident = str_replace('_', $this->getDelimiter(), $ident);
         $ident = trim($ident);
         $ident = str_replace(' ', '', $ident);
 
@@ -93,7 +91,7 @@ class Identifier
      */
     public function setDelimiter($delimiter)
     {
-        self::$delimiter = $delimiter;
+        $this->delimiter = $delimiter;
     }
 
     /**
@@ -103,6 +101,6 @@ class Identifier
      */
     public function getDelimiter()
     {
-        return self::$delimiter;
+        return $this->delimiter;
     }
 }

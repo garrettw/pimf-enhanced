@@ -46,6 +46,9 @@ abstract class Base
         $this->identityMap = new IdentityMap();
     }
 
+    /**
+     * Ensures clean shutdown.
+     */
     public function __destruct()
     {
         unset($this->identityMap, $this->pdo);

@@ -229,7 +229,7 @@ class Payload
      */
     public function flush()
     {
-        $this->session['data'] = array(Session::CSRF => $this->token(), ':new:' => array(), ':old:' => array());
+        $this->session['data'] = [Session::CSRF => $this->token(), ':new:' => [], ':old:' => []];
     }
 
     /**
@@ -311,7 +311,7 @@ class Payload
     protected function age()
     {
         $this->session['data'][':old:'] = $this->session['data'][':new:'];
-        $this->session['data'][':new:'] = array();
+        $this->session['data'][':new:'] = [];
     }
 
     /**

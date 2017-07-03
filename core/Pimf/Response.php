@@ -23,7 +23,7 @@ class Response
      *
      * @var string
      */
-    protected $requestMethod = null;
+    protected $requestMethod;
 
     /**
      * If the response attempts to send any cached headers.
@@ -37,7 +37,7 @@ class Response
      *
      * @var string
      */
-    protected static $typed = null;
+    protected static $typed;
 
     /**
      * @param string $requestMethod
@@ -156,7 +156,7 @@ class Response
      */
     public function cacheBrowser($seconds)
     {
-        self::preventMultipleCaching();
+        $this->preventMultipleCaching();
         self::$cached = true;
         Header::cacheBrowser($seconds);
 
@@ -170,7 +170,7 @@ class Response
      */
     public function cacheNone()
     {
-        self::preventMultipleCaching();
+        $this->preventMultipleCaching();
         self::$cached = true;
         Header::cacheNone();
 
@@ -186,7 +186,7 @@ class Response
      */
     public function cacheNoValidate($seconds = 60)
     {
-        self::preventMultipleCaching();
+        $this->preventMultipleCaching();
         self::$cached = true;
         Header::cacheNoValidate($seconds);
 
@@ -202,7 +202,7 @@ class Response
      */
     public function exitIfNotModifiedSince($lastModified)
     {
-        self::preventMultipleCaching();
+        $this->preventMultipleCaching();
         self::$cached = true;
         Header::exitIfNotModifiedSince($lastModified);
 
